@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "description": "NLP for Latin in JavaScript",
   "scripts": {
-    "parse": "./cmd.sh parse",
     "fetch": "./cmd.sh fetch",
+    "parse": "./cmd.sh parse",
+    "collect-lexes": "./cmd.sh collect-lexes",
     "make-dict": "./cmd.sh make-dict",
     "analyse-books": "./cmd.sh analyse-books"
   },
