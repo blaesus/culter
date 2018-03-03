@@ -45,6 +45,7 @@ interface TabulaPronominum {
         nominativus: string
         accusativus: string
     }
+    nemo: Row
 }
 
 export const tabulaPronominum: TabulaPronominum = {
@@ -822,5 +823,13 @@ export const tabulaPronominum: TabulaPronominum = {
     nihil: {
         nominativus: 'nihil',
         accusativus: 'nihil',
-    }
+    },
+    nemo: [
+        ['nēmō'],
+        ['nēminis'],
+        ['nēminī'],
+        ['nēminem'],
+        ['nēmine'],
+        ['nēmō'],
+    ],
 }

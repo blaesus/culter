@@ -41,6 +41,7 @@ export type ParsMinor =
     | 'pronomen-relativum'
     | 'pronomen-immutabile'
     | 'pronomen-reflexivum'
+    | 'pronomen-nullum'
 
 
 export type Numerus = 'singularis' | 'pluralis'
@@ -258,6 +259,11 @@ export interface PronomenImmutabile extends LexisCommunis<{}> {
     parsMinor: 'pronomen-immutabile'
 }
 
+export interface PronomenNullum extends LexisCommunis<{}> {
+    pars: 'pronomen'
+    parsMinor: 'pronomen-nullum'
+}
+
 export type Pronomen =
     PronomenPersonale
     | PronomenPossessivum
@@ -266,6 +272,7 @@ export type Pronomen =
     | PronomenRelativum
     | PronomenReflexivum
     | PronomenImmutabile
+    | PronomenNullum
 
 /**
  * Verba templorale
