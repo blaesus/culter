@@ -352,7 +352,7 @@ export function parseTabluamVerbiWiktionary(tableNode: CheerioElement, $: Cheeri
         else if (parseMode === 'infinitivus') {
             const cells = $row.find('th')
             const label = $(cells[0]).text()
-            if (label === 'infinitives') {
+            if (label === 'infinitives' && Object.keys(inflectionesInfinitivi).length >= 1) {
                 extractInfinitivum($row)
                 infinitivum = {
                     pars: 'infinitivum',
