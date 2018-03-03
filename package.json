@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "NLP for Latin in JavaScript",
   "scripts": {
-    "bootstrapLemmata": ""
+    "fetch": "./cmd.sh fetch"
   },
   "keywords": [],
   "author": "",
