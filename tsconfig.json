@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "strict": true,
+        "target": "es2017",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "lib": ["es5", "es2015", "es2016", "es2017", "es2017.object", "dom"],
+        "types": [
+            "node"
+        ],
+        "baseUrl": "src"
+    }
+}
