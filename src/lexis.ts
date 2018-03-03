@@ -33,6 +33,7 @@ export type Pars =
 
 export type ParsMinor =
     | 'nomen-immutabile'
+    | 'adiectivum-immutabile'
     | 'pronomen-demonstrativum'
     | 'pronomen-personale'
     | 'pronomen-possessivum'
@@ -139,7 +140,7 @@ export interface StatusAdiectivi {
 }
 
 export interface LexicographiaAdiectivum extends LexicographiaLexisCommunis {
-    thema: 'a' | 'consonans'
+    thema: 'a' | 'consonans' | 'alia'
     lemmataAlii: {
         comparativus: string
         superlativus: string

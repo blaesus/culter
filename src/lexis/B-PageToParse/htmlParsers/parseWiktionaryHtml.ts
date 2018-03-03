@@ -410,16 +410,32 @@ function translateAdjectivalThema(s: string): LexicographiaAdiectivum['thema'] {
 }
 
 const parseAdjectiveBrief: BriefParser<NomenAdiectivum> = (node, $) => {
-    const declension = $(node).find('[title*=declension]').text().split(' ')[0]
-    const thema = translateAdjectivalThema(declension)
     const lemma = $(node).find('.headword').text()
-    const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
-    return {
-        lexis: {},
-        lexicographia: {
-            lemma,
-            radices: [lemma, ...formaeAltrae],
-            thema,
+    if ($(node).find('[title*=indeclinable]').length) {
+        return {
+            lexis: {},
+            lexicographia: {
+                parsMinor: 'adiectivum-immutable',
+                lemma,
+                radices: [lemma],
+            },
+            thema: 'alia'
+        }
+    }
+    else {
+        const declension = $(node).find('[title*=declension]').text().split(' ')[0]
+        const thema =
+            lemma.endsWith('dam')
+                ? 'alia'
+                : translateAdjectivalThema(declension)
+        const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
+        return {
+            lexis: {},
+            lexicographia: {
+                lemma,
+                radices: [lemma, ...formaeAltrae],
+                thema,
+            }
         }
     }
 }

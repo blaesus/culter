@@ -42,7 +42,8 @@ export async function getParseByEntry(entry: string,
 export async function main() {
     await database.connect()
     const entry = process.argv[2]
-    const parse = await getParseByEntry(entry, {forceReparse: true, forceRefetch: true})
+    const refetch = process.argv[3] === 'refetch'
+    const parse = await getParseByEntry(entry, {forceReparse: true, forceRefetch: refetch})
     console.info(JSON.stringify(parse, null, 4))
     process.exit()
 }
