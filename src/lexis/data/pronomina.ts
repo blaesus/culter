@@ -1,4 +1,4 @@
-import { Casus, Genus, Numerus, PersonaPrononimisPersonalis } from '../../lexis'
+import { Casus, Genus, Numerus, PersonaPrononimisPersonalis } from 'lexis'
 
 type Sex<T> = [T, T, T, T, T, T]
 
@@ -20,24 +20,24 @@ export const lemmataPronominis: LemmaPronominisDemonstrativi[] = ['is', 'hic', '
 
 export type ComboNumerusGenusCasus = {
     [numerus in Numerus]: {
-    [genus in Genus]: Row
+        [genus in Genus]: Row
     }
-    }
+}
 
 interface TabulaPronominum {
     personale: {
         [persona in PersonaPrononimisPersonalis]: {
-        [numerus in Numerus]: Row
+            [numerus in Numerus]: Row
         }
-        }
+    }
     possessivum: {
         [persona in PersonaPrononimisPersonalis]: {
-        [numerus in Numerus]: ComboNumerusGenusCasus
-        }
-        }
+            [numerus in Numerus]: ComboNumerusGenusCasus
+            }
+    }
     demonstrativum: {
         [lemma in LemmaPronominisDemonstrativi]: ComboNumerusGenusCasus
-        }
+    }
     interrogativum: ComboNumerusGenusCasus
     relativum: ComboNumerusGenusCasus
     refexivum: ComboNumerusGenusCasus
@@ -45,6 +45,7 @@ interface TabulaPronominum {
         nominativus: string
         accusativus: string
     }
+    nemo: Row
 }
 
 export const tabulaPronominum: TabulaPronominum = {
@@ -822,5 +823,13 @@ export const tabulaPronominum: TabulaPronominum = {
     nihil: {
         nominativus: 'nihil',
         accusativus: 'nihil',
-    }
+    },
+    nemo: [
+        ['nēmō'],
+        ['nēminis'],
+        ['nēminī'],
+        ['nēminem'],
+        ['nēmine'],
+        ['nēmō'],
+    ],
 }

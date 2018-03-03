@@ -27,11 +27,13 @@ export type Pars =
     | 'postpositio'
     | 'littera'
     | 'interiectio'
+    | 'articulus'
     
     | 'ignotus'
 
 export type ParsMinor =
     | 'nomen-immutabile'
+    | 'adiectivum-immutabile'
     | 'pronomen-demonstrativum'
     | 'pronomen-personale'
     | 'pronomen-possessivum'
@@ -39,6 +41,7 @@ export type ParsMinor =
     | 'pronomen-relativum'
     | 'pronomen-immutabile'
     | 'pronomen-reflexivum'
+    | 'pronomen-nullum'
 
 
 export type Numerus = 'singularis' | 'pluralis'
@@ -101,7 +104,7 @@ interface LexisCommunis<Status,
     lexicographia: Lexicographia
     interpretationes: {
         [lingua in Lingua]?: Interpretatio[]
-        }
+    }
 }
 
 /**
@@ -138,7 +141,7 @@ export interface StatusAdiectivi {
 }
 
 export interface LexicographiaAdiectivum extends LexicographiaLexisCommunis {
-    thema: 'a' | 'consonans'
+    thema: 'a' | 'consonans' | 'alia'
     lemmataAlii: {
         comparativus: string
         superlativus: string
@@ -256,6 +259,11 @@ export interface PronomenImmutabile extends LexisCommunis<{}> {
     parsMinor: 'pronomen-immutabile'
 }
 
+export interface PronomenNullum extends LexisCommunis<{}> {
+    pars: 'pronomen'
+    parsMinor: 'pronomen-nullum'
+}
+
 export type Pronomen =
     PronomenPersonale
     | PronomenPossessivum
@@ -264,6 +272,7 @@ export type Pronomen =
     | PronomenRelativum
     | PronomenReflexivum
     | PronomenImmutabile
+    | PronomenNullum
 
 /**
  * Verba templorale
@@ -381,6 +390,10 @@ export interface Interiecio extends LexisCommunis<{}> {
     pars: 'interiectio'
 }
 
+export interface Articulus extends LexisCommunis<{}> {
+    pars: 'articulus'
+}
+
 export interface LexisIgnotus extends LexisCommunis<{}> {
     pars: 'ignotus'
 }
@@ -400,6 +413,7 @@ export type Lexis =
     | Postpositio
     | Littera
     | Interiecio
+    | Articulus
     | LexisIgnotus
 
 /**

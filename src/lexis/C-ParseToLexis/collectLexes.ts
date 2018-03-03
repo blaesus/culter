@@ -98,43 +98,43 @@ async function enhanceWithGrades(lexis: NomenAdiectivum): Promise<NomenAdiectivu
     return lexis
 }
 
+async function collectForOneLexis(lexis: Lexis) {
+    switch (lexis.pars) {
+        case 'verbum': {
+            await database.upsertLexis(lexis)
+            const participii = lexis.lemmataAlii.participii
+            const participium = await combineParticipium(participii, lexis.lexicographia.lemma)
+            if (participium) {
+                await database.upsertLexis(participium)
+            }
+            else {
+                console.warn(`Cannot compile participium: ${lexis.lexicographia.lemma}`)
+            }
+            break
+        }
+        case 'nomen-adiectivum': {
+            if (Object.keys(lexis.inflectiones).join('').includes('positivus')) {
+                const enhancedLexis = await enhanceWithGrades(lexis)
+                await database.upsertLexis(enhancedLexis)
+            }
+            break
+        }
+        case 'participium': {
+            break
+        }
+        case 'pronomen': {
+            break
+        }
+        default: {
+            await database.upsertLexis(lexis)
+        }
+    }
+}
+
 async function collectLexes(parseIds: string[]) {
     const CONCURRENT_WORKERS = 32
     const state: CompilerState = {
         parseIds
-    }
-    
-    async function collectForOneLexis(lexis: Lexis) {
-        switch (lexis.pars) {
-            case 'verbum': {
-                await database.upsertLexis(lexis)
-                const participii = lexis.lemmataAlii.participii
-                const participium = await combineParticipium(participii, lexis.lexicographia.lemma)
-                if (participium) {
-                    await database.upsertLexis(participium)
-                }
-                else {
-                    console.warn(`Cannot compile participium: ${lexis.lexicographia.lemma}`)
-                }
-                break
-            }
-            case 'nomen-adiectivum': {
-                if (Object.keys(lexis.inflectiones).join('').includes('positivus')) {
-                    const enhancedLexis = await enhanceWithGrades(lexis)
-                    await database.upsertLexis(enhancedLexis)
-                }
-                break
-            }
-            case 'participium': {
-                break
-            }
-            case 'pronomen': {
-                break
-            }
-            default: {
-                await database.upsertLexis(lexis)
-            }
-        }
     }
     
     async function collectNext(): Promise<void> {
@@ -173,8 +173,15 @@ async function collectLexes(parseIds: string[]) {
 
 async function main() {
     await database.connect()
-    const parseIds = await database.getSuccessfulParseIds()
-    await collectLexes(parseIds)
+    const argv = process.argv[2]
+    if (argv) {
+        const parseIds = [argv]
+        await collectLexes(parseIds)
+    }
+    else {
+        const parseIds = await database.getSuccessfulParseIds()
+        await collectLexes(parseIds)
+    }
     process.exit()
 }
 

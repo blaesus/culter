@@ -4,7 +4,7 @@ import {
     Pronomen,
     PronomenDemonstrativum,
     PronomenImmutabile,
-    PronomenInterrogativum,
+    PronomenInterrogativum, PronomenNullum,
     PronomenPersonale,
     PronomenPossessivum,
     PronomenReflexivum,
@@ -250,6 +250,32 @@ function makeNihil(): PronomenImmutabile {
     return nihil
 }
 
+function makeNemo(): PronomenNullum {
+    const nemo: PronomenNullum = {
+        pars: 'pronomen',
+        parsMinor: 'pronomen-nullum',
+        inflectiones: {},
+        lexicographia: {
+            lemma: tabulaPronominum.nemo[0][0],
+            radices: [tabulaPronominum.nemo[0][0], tabulaPronominum.nemo[1][0]],
+            etymologia: [],
+            pronunciatio: [],
+            references: [],
+            lemmataAlterae: [],
+        },
+        interpretationes: {
+            [LANG]: []
+        }
+    }
+    for (const casus of caseOrderPronominum) {
+        const index = caseOrderPronominum.indexOf(casus)
+        const formae = tabulaPronominum.nemo[index]
+        const status = serializeStatum('pronomen', {casus}, {parsMinor: 'pronomen-nullum'})
+        nemo.inflectiones[status] = formae
+    }
+    return nemo
+}
+
 function makePronomenReflexivum() {
     const pronomen: PronomenReflexivum = {
         pars: 'pronomen',
@@ -298,6 +324,7 @@ export function makePronounLexis(): Pronomen[] {
         makePronomenRelativum(),
         makePronomenReflexivum(),
         makeNihil(),
+        makeNemo(),
     ]
     return pronomina
 }

@@ -102,6 +102,7 @@ type GeneralSection =
     | 'Related terms'
     | 'Quotations'
     | 'Coordinate terms'
+    | 'Usage notes'
 
 type Section = GeneralSection | PartsWiktionary
 
@@ -120,6 +121,7 @@ function getGeneralSection(s: string | null): GeneralSection | null {
         || s === 'Related terms'
         || s === 'Quotations'
         || s === 'Coordinate terms'
+        || s === 'Usage notes'
     ) {
         return s
     }
@@ -139,6 +141,8 @@ function translateWiktionarySession(s: GeneralSection): keyof LexicographiaLexis
         case 'Declension':
             return null
         case 'Descendants':
+            return null
+        case 'Usage notes':
             return null
         default: {
             throw new Error(`Unexpected general session: ${s}`)
@@ -205,6 +209,8 @@ function translateWiktionaryPart(part: PartsWiktionary): Lexis['pars'] {
             return 'littera'
         case 'Interjection':
             return 'interiectio'
+        case 'Article':
+            return 'articulus'
         default: {
             throw new Error(`Not know how to proceed with wiktionary part ${part}`)
         }
@@ -408,26 +414,42 @@ function translateAdjectivalThema(s: string): LexicographiaAdiectivum['thema'] {
 }
 
 const parseAdjectiveBrief: BriefParser<NomenAdiectivum> = (node, $) => {
-    const declension = $(node).find('[title*=declension]').text().split(' ')[0]
-    const thema = translateAdjectivalThema(declension)
     const lemma = $(node).find('.headword').text()
-    const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
-    return {
-        lexis: {},
-        lexicographia: {
-            lemma,
-            radices: [lemma, ...formaeAltrae],
-            thema,
+    if ($(node).find('[title*=indeclinable]').length) {
+        return {
+            lexis: {},
+            lexicographia: {
+                parsMinor: 'adiectivum-immutable',
+                lemma,
+                radices: [lemma],
+            },
+            thema: 'alia'
+        }
+    }
+    else {
+        const declension = $(node).find('[title*=declension]').text().split(' ')[0]
+        const thema =
+            lemma.endsWith('dam')
+                ? 'alia'
+                : translateAdjectivalThema(declension)
+        const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
+        return {
+            lexis: {},
+            lexicographia: {
+                lemma,
+                radices: [lemma, ...formaeAltrae],
+                thema,
+            }
         }
     }
 }
 
 const parseAdverbBrief: BriefParser<Adverbium> = (node, $) => {
     const s = $(node).text()
-    const lemma = $(node).find('.headword').text()
+    const lemma = $(node).find('.headword').first().text()
     const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
     const radices = [lemma, ...formaeAltrae]
-    const nonComparabilis: boolean = !s.includes('not comparable')
+    const nonComparabilis: boolean = s.includes('not comparable')
     let inflectiones: Inflectiones<Adverbium> = {}
     if (radices.length === 3) {
         inflectiones = {
@@ -448,7 +470,7 @@ const parseAdverbBrief: BriefParser<Adverbium> = (node, $) => {
         lexicographia: {
             lemma,
             radices,
-            comparabilis: nonComparabilis,
+            comparabilis: !nonComparabilis,
         }
     }
 }
@@ -676,6 +698,12 @@ function getInitLexis(pars: Lexis['pars']): Lexis {
             return {
                 ...getBaseLexem(LANG),
                 pars: 'interiectio',
+            }
+        }
+        case 'articulus': {
+            return {
+                ...getBaseLexem(LANG),
+                pars: 'articulus',
             }
         }
         case 'ignotus': {
@@ -1005,9 +1033,6 @@ export function parseWiktionaryLexemeGroup(nodes: CheerioElement[], $: CheerioSt
     
     if (state.parsingResult.pars === 'ignotus') {
         throw new Error('Unkonwn pars unprocessed')
-    }
-    if (Object.keys(state.parsingResult.inflectiones).length === 0) {
-        throw new Error('No inflections recorded')
     }
     
     return {
