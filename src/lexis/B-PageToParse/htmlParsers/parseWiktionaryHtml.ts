@@ -205,6 +205,8 @@ function translateWiktionaryPart(part: PartsWiktionary): Lexis['pars'] {
             return 'littera'
         case 'Interjection':
             return 'interiectio'
+        case 'Article':
+            return 'articulus'
         default: {
             throw new Error(`Not know how to proceed with wiktionary part ${part}`)
         }
@@ -678,6 +680,12 @@ function getInitLexis(pars: Lexis['pars']): Lexis {
                 pars: 'interiectio',
             }
         }
+        case 'articulus': {
+            return {
+                ...getBaseLexem(LANG),
+                pars: 'articulus',
+            }
+        }
         case 'ignotus': {
             return {
                 ...getBaseLexem(LANG),
@@ -1005,9 +1013,6 @@ export function parseWiktionaryLexemeGroup(nodes: CheerioElement[], $: CheerioSt
     
     if (state.parsingResult.pars === 'ignotus') {
         throw new Error('Unkonwn pars unprocessed')
-    }
-    if (Object.keys(state.parsingResult.inflectiones).length === 0) {
-        throw new Error('No inflections recorded')
     }
     
     return {

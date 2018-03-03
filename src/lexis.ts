@@ -27,6 +27,7 @@ export type Pars =
     | 'postpositio'
     | 'littera'
     | 'interiectio'
+    | 'articulus'
     
     | 'ignotus'
 
@@ -101,7 +102,7 @@ interface LexisCommunis<Status,
     lexicographia: Lexicographia
     interpretationes: {
         [lingua in Lingua]?: Interpretatio[]
-        }
+    }
 }
 
 /**
@@ -381,6 +382,10 @@ export interface Interiecio extends LexisCommunis<{}> {
     pars: 'interiectio'
 }
 
+export interface Articulus extends LexisCommunis<{}> {
+    pars: 'articulus'
+}
+
 export interface LexisIgnotus extends LexisCommunis<{}> {
     pars: 'ignotus'
 }
@@ -400,6 +405,7 @@ export type Lexis =
     | Postpositio
     | Littera
     | Interiecio
+    | Articulus
     | LexisIgnotus
 
 /**
