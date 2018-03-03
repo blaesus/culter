@@ -102,6 +102,7 @@ type GeneralSection =
     | 'Related terms'
     | 'Quotations'
     | 'Coordinate terms'
+    | 'Usage notes'
 
 type Section = GeneralSection | PartsWiktionary
 
@@ -120,6 +121,7 @@ function getGeneralSection(s: string | null): GeneralSection | null {
         || s === 'Related terms'
         || s === 'Quotations'
         || s === 'Coordinate terms'
+        || s === 'Usage notes'
     ) {
         return s
     }
@@ -139,6 +141,8 @@ function translateWiktionarySession(s: GeneralSection): keyof LexicographiaLexis
         case 'Declension':
             return null
         case 'Descendants':
+            return null
+        case 'Usage notes':
             return null
         default: {
             throw new Error(`Unexpected general session: ${s}`)
@@ -442,10 +446,10 @@ const parseAdjectiveBrief: BriefParser<NomenAdiectivum> = (node, $) => {
 
 const parseAdverbBrief: BriefParser<Adverbium> = (node, $) => {
     const s = $(node).text()
-    const lemma = $(node).find('.headword').text()
+    const lemma = $(node).find('.headword').first().text()
     const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
     const radices = [lemma, ...formaeAltrae]
-    const nonComparabilis: boolean = !s.includes('not comparable')
+    const nonComparabilis: boolean = s.includes('not comparable')
     let inflectiones: Inflectiones<Adverbium> = {}
     if (radices.length === 3) {
         inflectiones = {
@@ -466,7 +470,7 @@ const parseAdverbBrief: BriefParser<Adverbium> = (node, $) => {
         lexicographia: {
             lemma,
             radices,
-            comparabilis: nonComparabilis,
+            comparabilis: !nonComparabilis,
         }
     }
 }
