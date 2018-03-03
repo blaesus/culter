@@ -2,7 +2,7 @@ import { connect, Db } from 'mongodb'
 import * as shortid from 'shortid'
 import { Lexis } from 'lexis'
 
-shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_')
+shortid.characters('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_=')
 
 export type Source = 'wiktionary'
 
