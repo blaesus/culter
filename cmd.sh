@@ -8,10 +8,10 @@ case $1 in
     ts-node src/lexis/B-PageToParse/parsePage $2
   ;;
   "collect-lexes")
-    ts-node src/lexis/C-ParseToLexis/collectLexes.ts
+    ts-node src/lexis/C-ParseToLexis/collectLexes.ts $2
   ;;
   "make-dict")
-    ts-node src/lexis/D-LexisToDict/makeInflectionDict.ts
+    ts-node src/lexis/D-LexisToDict/makeInflectionDict.ts $2
   ;;
   "analyse-books")
     ts-node src/corpus/analyseBooks.ts $2
