@@ -1,9 +1,9 @@
 import { getWiktionaryPage } from './fetchPage'
-import { spawnConcurrent } from '../../nodeUtils'
-import { database } from '../database'
-import { parseWiktionaryHtml } from '../B-PageToParse/htmlParsers/parseWiktionaryHtml'
-import { demacron } from '../../utils'
-import { data } from '../data/data'
+import { spawnConcurrent } from 'nodeUtils'
+import { database } from 'lexis/database'
+import { parseWiktionaryHtml } from 'lexis/B-PageToParse/htmlParsers/parseWiktionaryHtml'
+import { demacron } from 'utils'
+import { data } from 'lexis/data'
 
 async function fetchEntries(entries: string[]) {
     const CONCURRENT_WORKERS = 8

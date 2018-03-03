@@ -1,7 +1,7 @@
-import { writeFileAsync } from '../../nodeUtils'
-import { viaFailureReport } from '../../config'
-import { database } from '../database'
-import { data } from '../data/data'
+import { writeFileAsync } from 'nodeUtils'
+import { viaFailureReport } from 'config'
+import { database } from 'lexis/database'
+import { data } from 'lexis/data'
 
 interface FailureReport {
     [lemma: string]: {

@@ -7,9 +7,16 @@
     "parse": "./cmd.sh parse",
     "collect-lexes": "./cmd.sh collect-lexes",
     "make-dict": "./cmd.sh make-dict",
-    "analyse-books": "./cmd.sh analyse-books"
+    "analyse-books": "./cmd.sh analyse-books",
+    "compile": "./compile.sh",
+    "prepublishOnly": "npm run compile"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blaesus/culter.git"
+  },
+  "main": "src/index.ts",
+  "keywords": ["NLP", "Latin"],
   "author": "",
   "license": "MIT",
   "devDependencies": {

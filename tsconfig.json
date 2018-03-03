@@ -9,6 +9,10 @@
         "types": [
             "node"
         ],
-        "baseUrl": "src"
-    }
+        "baseUrl": "src",
+        "outDir": "./dist"
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
 }
