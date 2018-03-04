@@ -490,7 +490,7 @@ export function parseSeriemStatus<S extends StatusOmnibus>(series: SeriesStatus<
 }
 
 export const numerus: Numerus[] = ['singularis', 'pluralis']
-export const modus: Modus[] = ['indicativus', 'coniunctivus', 'imperativus']
+export const modi: Modus[] = ['indicativus', 'coniunctivus', 'imperativus']
 export const vox: Vox[] = ['activa', 'passiva']
 export const tempus: Tempus[] = ['praesens', 'praeteritum', 'futurum']
 export const aspectus: Aspectus[] = ['imperfectivus', 'perfectivus']

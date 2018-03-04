@@ -4,12 +4,53 @@ import { radixCache } from 'config'
 import { join } from 'path'
 import { KnownTokenAnalysis } from 'analysis/analyse'
 import {
-    Aspectus, Casus, Genus, Gradus, Modus, Numerus, Pars, ParsMinor, Persona, serializeStatum, Status, Tempus,
+    Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, ParsMinor, Persona, serializeStatum, Status, Tempus,
     Vox
 } from 'lexis'
 import { removeNullItems } from 'utils'
 
 type Tabula<T> = {[key in string]?: T}
+
+type Mood = Modus | Pars | 'gerundivus' // "gerundive"
+
+function estneModus(s: string): boolean {
+    return modi.includes(s as any)
+}
+
+function translateMood(mood?: string): {
+    parsVera?: Pars
+    statusMood?: Status
+} {
+    if (!mood) {
+        return { }
+    }
+    else if (estneModus(mood)) {
+        return {
+            parsVera: undefined,
+            statusMood: {
+                modus: mood as Modus,
+            },
+        }
+    }
+    else if (mood === 'gerundivus') {
+        return {
+            parsVera: 'participium',
+            statusMood: {
+                tempus: 'futurum',
+                vox: 'passiva',
+                modus: undefined,
+            }
+        }
+    }
+    else {
+        return {
+            parsVera: mood as Pars,
+            statusMood: {
+                modus: undefined,
+            }
+        }
+    }
+}
 
 function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
     
@@ -47,14 +88,14 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         f: ['futurum', 'imperfectivus'],
     }
     
-    const perseusMoodTable: Tabula<Modus | Pars> = {
+    const perseusMoodTable: Tabula<Mood> = {
         i: 'indicativus',
         s: 'coniunctivus',
         m: 'imperativus',
         n: 'infinitivum',
         p: 'participium',
         d: 'gerundium',
-        g: 'participium', // "gerundive"
+        g: 'gerundivus',
     }
     
     const perseusVoiceTable: Tabula<Vox> = {
@@ -90,15 +131,17 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
             throw new Error('postag string is empty')
         }
         const characters = series.split('')
-        const pars = perseusParsTable[characters[0]]
+        let pars = perseusParsTable[characters[0]]
         const persona = perseusPersonaTable[characters[1]]
         const numerus = perseusNumerusTable[characters[2]]
         const [tempus, aspectus] = perseusTenseTable[characters[3]] || [null, null]
-        const modus = perseusMoodTable[characters[4]]
+        const mood = perseusMoodTable[characters[4]]
         const vox = perseusVoiceTable[characters[5]]
         const genus = perseusGenderTable[characters[6]]
         const casus = perseusCasusTable[characters[7]]
         const gradus = perseusGradusTable[characters[8]]
+        
+        const {parsVera, statusMood} = translateMood(mood)
         
         const status: Status = {
             casus,
@@ -106,14 +149,15 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
             numerus,
             tempus,
             aspectus,
-            modus,
             vox,
             genus,
             gradus,
+            modus: mood,
+            ...statusMood,
         }
         if (pars) {
             return {
-                pars,
+                pars: parsVera || pars,
                 status,
             }
         }
@@ -212,7 +256,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         x: undefined,
     }
     
-    const moodTable: Tabula<Modus | Pars> = {
+    const moodTable: Tabula<Mood> = {
         i: 'indicativus',
         s: 'coniunctivus',
         m: 'imperativus',
@@ -220,7 +264,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         n: 'infinitivum',
         p: 'participium',
         d: 'gerundium',
-        g: 'participium', // gerundive
+        g: 'gerundivus', // gerundive
         u: 'supinum',
         x: undefined, // uncertain
         y: undefined, // finiteness unspecified
@@ -273,28 +317,34 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         z: undefined,
     }
     
-    function parseStatusString(s: string): Status {
+    function parseStatusString(s: string): {status: Status, pars: Pars | undefined} {
         const characters = s.split('')
         const persona = personTable[characters[0]]
         const numerus = numberTable[characters[1]]
         const [tempus, aspectus] = tenseTable[characters[2]] || [undefined, undefined]
-        const modus = moodTable[characters[3]]
+        const mood = moodTable[characters[3]]
         const vox = voiceTable[characters[4]]
         const genus = genusTable[characters[5]]
         const casus = caseTable[characters[6]]
         const gradus = gradusTable[characters[7]]
+        const {parsVera: pars, statusMood} = translateMood(mood)
+        
         const status: Status = {
             persona,
             numerus,
             tempus,
             aspectus,
-            modus,
+            modus: mood,
             vox,
             genus,
             casus,
             gradus,
+            ...statusMood,
         }
-        return status
+        return {
+            status,
+            pars
+        }
     }
     
     function parseTokenElement(token: CheerioElement): KnownTokenAnalysis | null {
