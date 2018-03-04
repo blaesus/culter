@@ -4,12 +4,12 @@ import { FrequencyTable } from './makeCrudeFrequencyTable'
 import { demacron, reverseCapitalize } from 'utils'
 
 export interface UnknownTokenAnalysis {
-    type: 'unknown'
+    type: 'ignotus'
     token: string
 }
 
 export interface KnownTokenAnalysis {
-    type: 'known'
+    type: 'notus'
     token: string
     lemma: string
     pars: Pars
@@ -17,7 +17,7 @@ export interface KnownTokenAnalysis {
 }
 
 export interface SkipTokenAnalysis {
-    type: 'skip'
+    type: 'neglectus'
     token: string
 }
 
@@ -55,7 +55,7 @@ function shouldSkip(token: string): boolean {
 function getResult(token: string, data: AnalyserData): TokenAnalysis {
     if (shouldSkip(token)) {
         return {
-            type: 'skip',
+            type: 'neglectus',
             token
         }
     }
@@ -78,7 +78,7 @@ function getResult(token: string, data: AnalyserData): TokenAnalysis {
             designation => getFrequency(demacron(designation.lemma), frequencyTable)
         )
         return {
-            type: 'known',
+            type: 'notus',
             token,
             pars: designation.pars,
             lemma: designation.lemma,
@@ -87,7 +87,7 @@ function getResult(token: string, data: AnalyserData): TokenAnalysis {
     }
     else {
         return {
-            type: 'unknown',
+            type: 'ignotus',
             token,
         }
     }

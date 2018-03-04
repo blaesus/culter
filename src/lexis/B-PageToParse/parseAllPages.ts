@@ -6,7 +6,7 @@ interface CompilerState {
     urls: string[]
     failures: {
         [lemma in string]: string
-        }
+    }
 }
 
 interface CompilerMetrics {

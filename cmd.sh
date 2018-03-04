@@ -7,6 +7,9 @@ case $1 in
   "parse")
     ts-node src/lexis/B-PageToParse/parsePage $2
   ;;
+  "parse:all")
+    ts-node src/lexis/B-PageToParse/parseAllPages $2
+  ;;
   "collect-lexes")
     ts-node src/lexis/C-ParseToLexis/collectLexes.ts $2
   ;;

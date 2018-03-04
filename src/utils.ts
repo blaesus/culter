@@ -59,3 +59,9 @@ export function reverseCapitalize(s: string): string {
     }
 }
 
+export function removeNullItems<T>(accumulated: T[], next: T | null): T[] {
+    if (next) {
+        return accumulated.concat(next)
+    }
+    return accumulated
+}

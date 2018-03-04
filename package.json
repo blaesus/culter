@@ -5,6 +5,7 @@
   "scripts": {
     "fetch": "./cmd.sh fetch",
     "parse": "./cmd.sh parse",
+    "parse:all": "./cmd.sh parse:all",
     "collect-lexes": "./cmd.sh collect-lexes",
     "make-dict": "./cmd.sh make-dict",
     "analyse-books": "./cmd.sh analyse-books",
