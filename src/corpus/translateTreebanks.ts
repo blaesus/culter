@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import { readdirAsync, readFileAsync } from 'nodeUtils'
+import { readdirAsync, readFileAsync, writeFileAsync } from 'nodeUtils'
 import { radixCache } from 'config'
 import { join } from 'path'
 import { KnownTokenAnalysis } from 'analysis/analyse'
@@ -356,7 +356,7 @@ async function main() {
         results = results.concat(translateProielTreebank(text.toString()))
     }
     
-    console.info(results.length)
+    await writeFileAsync(join(radixCache, 'treebanks.json'), JSON.stringify(results, null, 4))
 }
 
 main()
