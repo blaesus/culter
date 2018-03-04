@@ -173,7 +173,7 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
             const analysis: KnownTokenAnalysis = {
                 type: 'notus',
                 forma: word.attribs['form'],
-                lemma: word.attribs['lemma'],
+                lemma: word.attribs['lemma'].replace(/\d/, ''),
                 pars,
                 status: serializeStatum(pars, status),
             }
