@@ -1,10 +1,10 @@
 import { readdirAsync, readFileAsync, readJSONAsync, writeFileAsync } from 'nodeUtils'
 import { radixLatinLibrary, radixTokens } from 'config'
-import { decapitalize } from 'utils'
 import { join } from 'path'
 import { FrequencyTable } from 'analysis/makeCrudeFrequencyTable'
 import { data } from 'lexis/data'
 import { praenomina } from 'lexis/data/praenomina'
+import { tokenize } from 'corpus/tokenize'
 
 async function readdirFullAsync(basePath: string): Promise<string[]> {
     const subs = await readdirAsync(basePath)
@@ -30,49 +30,6 @@ async function getTexts(author: string): Promise<string[]> {
         console.warn(`Cannot find files for ${author}`)
         return []
     }
-}
-
-const punctuations: RegExp[] = [
-    /,/g,
-    /\./g,
-    /\[/g,
-    /]/g,
-    /\(/g,
-    /\)/g,
-    /;/g,
-    /\?/g,
-    /!/g,
-    /:/g,
-    /"/g,
-    /'/g,
-    /\*/g,
-]
-
-const spaces: RegExp[] = [
-    /\n/g,
-    /\t/g,
-]
-
-function cleanText(s: string): string {
-    for (const punctuation of punctuations) {
-        s = s.replace(punctuation, '')
-    }
-    for (const space of spaces) {
-        s = s.replace(space, ' ')
-    }
-    return s
-}
-
-function tokenize(sentence: string, frequencyTable: FrequencyTable): string[] {
-    const tokens = cleanText(decapitalize(sentence)).split(' ')
-    for (let i = 0; i < tokens.length; i += 1) {
-        const token = tokens[i]
-        if (token.endsWith('que') && !frequencyTable[token]) {
-            tokens.splice(i, 1, token.replace(/que$/, ''), '-que')
-            i += 1
-        }
-    }
-    return tokens.filter(Boolean)
 }
 
 function tokenizeBooks(books: string[], frequencyTable: FrequencyTable): string[] {
