@@ -33,7 +33,7 @@ interface TabulaPronominum {
     possessivum: {
         [persona in PersonaPrononimisPersonalis]: {
             [numerus in Numerus]: ComboNumerusGenusCasus
-            }
+        }
     }
     demonstrativum: {
         [lemma in LemmaPronominisDemonstrativi]: ComboNumerusGenusCasus

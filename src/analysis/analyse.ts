@@ -1,4 +1,4 @@
-import { Lexis, Pars, SeriesStatus } from 'lexis'
+import { Lexis, Pars, ParsMinor, SeriesStatus } from 'lexis'
 import { InflectedFormDesignation, InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { FrequencyTable } from './makeCrudeFrequencyTable'
 import { demacron, reverseCapitalize } from 'utils'
@@ -13,6 +13,7 @@ export interface KnownTokenAnalysis {
     token: string
     lemma: string
     pars: Pars
+    parsMinor?: ParsMinor
     status?: SeriesStatus<Lexis>
 }
 

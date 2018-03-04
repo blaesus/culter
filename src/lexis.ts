@@ -31,6 +31,8 @@ export type Pars =
     | 'punctum'
     | 'adpositum'
     | 'exclamatio'
+    | 'alienum'
+    | 'alia'
     
     | 'ignotus'
 
