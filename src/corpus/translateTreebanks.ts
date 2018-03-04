@@ -1,7 +1,8 @@
-import * as cheerio from 'cheerio'
-import { readdirAsync, readFileAsync, writeFileAsync } from 'nodeUtils'
-import { radixCache } from 'config'
 import { join } from 'path'
+import * as cheerio from 'cheerio'
+import { readdirAsync, readFileAsync } from 'nodeUtils'
+import { radixCache } from 'config'
+import { data } from 'lexis/data'
 import {
     Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, ParsMinor, Persona, serializeStatum, Status, Tempus,
     Vox
@@ -406,7 +407,7 @@ async function main() {
         results = results.concat(translateProielTreebank(text.toString()))
     }
     
-    await writeFileAsync(join(radixCache, 'treebanks.json'), JSON.stringify(results, null, 4))
+    await data.saveTreebanks(results)
 }
 
 main()

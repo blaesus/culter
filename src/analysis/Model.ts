@@ -24,3 +24,4 @@ export interface SkipTokenAnalysis {
 
 export type TokenAnalysis = UnknownTokenAnalysis | KnownTokenAnalysis | SkipTokenAnalysis
 
+export type Treebank = KnownTokenAnalysis[][]
