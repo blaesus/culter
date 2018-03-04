@@ -9,11 +9,11 @@ import {
 } from 'lexis'
 import { removeNullItems } from 'utils'
 
-type Tabla<T> = {[key in string]?: T}
+type Tabula<T> = {[key in string]?: T}
 
 function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
     
-    const perseusParsTable: Tabla<Pars> = {
+    const perseusParsTable: Tabula<Pars> = {
         n: 'nomen-substantivum',
         v: 'verbum',
         a: 'nomen-adiectivum',
@@ -27,18 +27,18 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         u: 'punctum'
     }
     
-    const perseusPersonaTable: Tabla<Persona> = {
+    const perseusPersonaTable: Tabula<Persona> = {
         1: 'prima',
         2: 'secunda',
         3: 'tertia',
     }
     
-    const perseusNumerusTable: Tabla<Numerus> = {
+    const perseusNumerusTable: Tabula<Numerus> = {
         s: 'singularis',
         p: 'pluralis',
     }
     
-    const perseusTenseTable: Tabla<[Tempus, Aspectus]> = {
+    const perseusTenseTable: Tabula<[Tempus, Aspectus]> = {
         p: ['praesens', 'imperfectivus'],
         i: ['praeteritum', 'imperfectivus'],
         r: ['praesens', 'perfectivus'],
@@ -47,7 +47,7 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         f: ['futurum', 'imperfectivus'],
     }
     
-    const perseusMoodTable: Tabla<Modus | Pars> = {
+    const perseusMoodTable: Tabula<Modus | Pars> = {
         i: 'indicativus',
         s: 'coniunctivus',
         m: 'imperativus',
@@ -57,19 +57,19 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         g: 'participium', // "gerundive"
     }
     
-    const perseusVoiceTable: Tabla<Vox> = {
+    const perseusVoiceTable: Tabula<Vox> = {
         a: 'activa',
         p: 'passiva',
         d: 'activa', // deponens
     }
     
-    const perseusGenderTable: Tabla<Genus> = {
+    const perseusGenderTable: Tabula<Genus> = {
         m: 'masculinum',
         f: 'femininum',
         n: 'neutrum',
     }
     
-    const perseusCasusTable: Tabla<Casus> = {
+    const perseusCasusTable: Tabula<Casus> = {
         n: 'nominativus',
         g: 'genetivus',
         d: 'dativus',
@@ -79,7 +79,7 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         l: 'locativus',
     }
     
-    const perseusGradusTable: Tabla<Gradus> = {
+    const perseusGradusTable: Tabula<Gradus> = {
         p: 'positivus',
         c: 'comparativus',
         s: 'superlativus',
@@ -154,7 +154,7 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
 
 function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
     
-    const parsTable: Tabla<[Pars, ParsMinor | undefined]> = {
+    const parsTable: Tabula<[Pars, ParsMinor | undefined]> = {
         'A-': ['nomen-adiectivum', undefined],
         'Df': ['adverbium', undefined],
         'S-': ['articulus', undefined],
@@ -185,21 +185,21 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         // 'N-': ['alia', 'signum-infinitivum'],
     }
     
-    const personTable: Tabla<Persona> = {
+    const personTable: Tabula<Persona> = {
         1: 'prima',
         2: 'secunda',
         3: 'tertia',
         x: undefined,
     }
     
-    const numberTable: Tabla<Numerus> = {
+    const numberTable: Tabula<Numerus> = {
         s: 'singularis',
         p: 'pluralis',
         d: undefined, // dual
         x: undefined,
     }
     
-    const tenseTable: Tabla<[Tempus, Aspectus]> = {
+    const tenseTable: Tabula<[Tempus, Aspectus]> = {
         p: ['praesens', 'imperfectivus'],
         i: ['praeteritum', 'imperfectivus'],
         r: ['praesens', 'perfectivus'],
@@ -212,7 +212,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         x: undefined,
     }
     
-    const moodTable: Tabla<Modus | Pars> = {
+    const moodTable: Tabula<Modus | Pars> = {
         i: 'indicativus',
         s: 'coniunctivus',
         m: 'imperativus',
@@ -230,7 +230,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         t: undefined, // finite
     }
     
-    const voiceTable: Tabla<Vox> = {
+    const voiceTable: Tabula<Vox> = {
         a: 'activa',
         p: 'passiva',
         m: undefined, // middle
@@ -238,7 +238,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         x: undefined,
     }
     
-    const genusTable: Tabla<Genus> = {
+    const genusTable: Tabula<Genus> = {
         m: 'masculinum',
         f: 'femininum',
         n: 'neutrum',
@@ -249,7 +249,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         x: undefined,
     }
     
-    const caseTable: Tabla<Casus> = {
+    const caseTable: Tabula<Casus> = {
         n: 'nominativus',
         a: 'accusativus',
         o: undefined, // oblique
@@ -265,7 +265,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         z: undefined,
     }
     
-    const gradusTable: Tabla<Gradus> = {
+    const gradusTable: Tabula<Gradus> = {
         p: 'positivus',
         c: 'comparativus',
         s: 'superlativus',
