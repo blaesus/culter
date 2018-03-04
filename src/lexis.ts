@@ -58,17 +58,17 @@ export type Casus =
 
 export type Modus = 'indicativus' | 'imperativus' | 'coniunctivus'
 export type Vox = 'activa' | 'passiva' // "genus verbi"
-export type Tempus = 'praesens' | 'praeteritus' | 'futurus'
+export type Tempus = 'praesens' | 'praeteritum' | 'futurum'
 export type Aspectus = 'imperfectivus' | 'perfectivus'
 export type Persona = 'prima' | 'secunda' | 'tertia'
 
 /*  tempus + aspectus = "tempus"
     praesens + imperfectus = "praesens"
     praesens + perfectus = "perfectus"
-    praeteritus + imperfectus = "imperfectum"
-    praeteritus + perfectus = "plus-quam-perfectum"
-    futurus + imperfectus = "futurum"
-    futurus + perfectus = "futurum perfectum" */
+    praeteritum + imperfectus = "imperfectum"
+    praeteritum + perfectus = "plus-quam-perfectum"
+    futurum + imperfectus = "futurum"
+    futurum + perfectus = "futurum perfectum" */
 
 export type SeriesStatus<Status> = string
 
@@ -338,9 +338,9 @@ export interface Verbum extends LexisCommunis<StatusFinitivi, LexicographiaVerbi
         gerundium: string | null
         participii: {
             praesensActiva?: string
-            futurusActiva?: string
-            praeteritusPassiva?: string
-            futurusPassiva?: string
+            futurumActiva?: string
+            praeteritumPassiva?: string
+            futurumPassiva?: string
         }
         infinitivum: string | null
     }
@@ -487,7 +487,7 @@ export function parseSeriemStatus<S extends StatusOmnibus>(series: SeriesStatus<
 export const numerus: Numerus[] = ['singularis', 'pluralis']
 export const modus: Modus[] = ['indicativus', 'coniunctivus', 'imperativus']
 export const vox: Vox[] = ['activa', 'passiva']
-export const tempus: Tempus[] = ['praesens', 'praeteritus', 'futurus']
+export const tempus: Tempus[] = ['praesens', 'praeteritum', 'futurum']
 export const aspectus: Aspectus[] = ['imperfectivus', 'perfectivus']
 export const persona: Persona[] = ['prima', 'secunda', 'tertia']
 

@@ -19,41 +19,41 @@ export const sum: Verbum['inflectiones'] = {
     'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|praesens|imperfectivus': [
         'sunt'
     ],
-    'verbum|-|singularis|prima|-|-|-|indicativus|activa|praeteritus|imperfectivus': [
+    'verbum|-|singularis|prima|-|-|-|indicativus|activa|praeteritum|imperfectivus': [
         'eram'
     ],
-    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|praeteritus|imperfectivus': [
+    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|praeteritum|imperfectivus': [
         'erās'
     ],
-    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|praeteritus|imperfectivus': [
+    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|praeteritum|imperfectivus': [
         'erat'
     ],
-    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|praeteritus|imperfectivus': [
+    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|praeteritum|imperfectivus': [
         'erāmus'
     ],
-    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|praeteritus|imperfectivus': [
+    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|praeteritum|imperfectivus': [
         'erātis'
     ],
-    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|praeteritus|imperfectivus': [
+    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|praeteritum|imperfectivus': [
         'erant'
     ],
-    'verbum|-|singularis|prima|-|-|-|indicativus|activa|futurus|imperfectivus': [
+    'verbum|-|singularis|prima|-|-|-|indicativus|activa|futurum|imperfectivus': [
         'erō'
     ],
-    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|futurus|imperfectivus': [
+    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|futurum|imperfectivus': [
         'eris',
         'ere'
     ],
-    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|futurus|imperfectivus': [
+    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|futurum|imperfectivus': [
         'erit'
     ],
-    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|futurus|imperfectivus': [
+    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|futurum|imperfectivus': [
         'erimus'
     ],
-    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|futurus|imperfectivus': [
+    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|futurum|imperfectivus': [
         'eritis'
     ],
-    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|futurus|imperfectivus': [
+    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|futurum|imperfectivus': [
         'erunt'
     ],
     'verbum|-|singularis|prima|-|-|-|indicativus|activa|praesens|perfectivus': [
@@ -75,40 +75,40 @@ export const sum: Verbum['inflectiones'] = {
         'fuērunt',
         'fuēre'
     ],
-    'verbum|-|singularis|prima|-|-|-|indicativus|activa|praeteritus|perfectivus': [
+    'verbum|-|singularis|prima|-|-|-|indicativus|activa|praeteritum|perfectivus': [
         'fueram'
     ],
-    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|praeteritus|perfectivus': [
+    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|praeteritum|perfectivus': [
         'fuerās'
     ],
-    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|praeteritus|perfectivus': [
+    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|praeteritum|perfectivus': [
         'fuerat'
     ],
-    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|praeteritus|perfectivus': [
+    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|praeteritum|perfectivus': [
         'fuerāmus'
     ],
-    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|praeteritus|perfectivus': [
+    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|praeteritum|perfectivus': [
         'fuerātis'
     ],
-    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|praeteritus|perfectivus': [
+    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|praeteritum|perfectivus': [
         'fuerant'
     ],
-    'verbum|-|singularis|prima|-|-|-|indicativus|activa|futurus|perfectivus': [
+    'verbum|-|singularis|prima|-|-|-|indicativus|activa|futurum|perfectivus': [
         'fuerō'
     ],
-    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|futurus|perfectivus': [
+    'verbum|-|singularis|secunda|-|-|-|indicativus|activa|futurum|perfectivus': [
         'fueris'
     ],
-    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|futurus|perfectivus': [
+    'verbum|-|singularis|tertia|-|-|-|indicativus|activa|futurum|perfectivus': [
         'fuerit'
     ],
-    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|futurus|perfectivus': [
+    'verbum|-|pluralis|prima|-|-|-|indicativus|activa|futurum|perfectivus': [
         'fuerimus'
     ],
-    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|futurus|perfectivus': [
+    'verbum|-|pluralis|secunda|-|-|-|indicativus|activa|futurum|perfectivus': [
         'fueritis'
     ],
-    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|futurus|perfectivus': [
+    'verbum|-|pluralis|tertia|-|-|-|indicativus|activa|futurum|perfectivus': [
         'fuerint'
     ],
     'verbum|-|singularis|prima|-|-|-|coniunctivus|activa|praesens|imperfectivus': [
@@ -129,27 +129,27 @@ export const sum: Verbum['inflectiones'] = {
     'verbum|-|pluralis|tertia|-|-|-|coniunctivus|activa|praesens|imperfectivus': [
         'sint'
     ],
-    'verbum|-|singularis|prima|-|-|-|coniunctivus|activa|praeteritus|imperfectivus': [
+    'verbum|-|singularis|prima|-|-|-|coniunctivus|activa|praeteritum|imperfectivus': [
         'essem',
         'forem'
     ],
-    'verbum|-|singularis|secunda|-|-|-|coniunctivus|activa|praeteritus|imperfectivus': [
+    'verbum|-|singularis|secunda|-|-|-|coniunctivus|activa|praeteritum|imperfectivus': [
         'essēs',
         'forēs'
     ],
-    'verbum|-|singularis|tertia|-|-|-|coniunctivus|activa|praeteritus|imperfectivus': [
+    'verbum|-|singularis|tertia|-|-|-|coniunctivus|activa|praeteritum|imperfectivus': [
         'esset',
         'foret'
     ],
-    'verbum|-|pluralis|prima|-|-|-|coniunctivus|activa|praeteritus|imperfectivus': [
+    'verbum|-|pluralis|prima|-|-|-|coniunctivus|activa|praeteritum|imperfectivus': [
         'essēmus',
         'forēmus'
     ],
-    'verbum|-|pluralis|secunda|-|-|-|coniunctivus|activa|praeteritus|imperfectivus': [
+    'verbum|-|pluralis|secunda|-|-|-|coniunctivus|activa|praeteritum|imperfectivus': [
         'essētis',
         'forētis'
     ],
-    'verbum|-|pluralis|tertia|-|-|-|coniunctivus|activa|praeteritus|imperfectivus': [
+    'verbum|-|pluralis|tertia|-|-|-|coniunctivus|activa|praeteritum|imperfectivus': [
         'essent',
         'forent'
     ],
@@ -171,22 +171,22 @@ export const sum: Verbum['inflectiones'] = {
     'verbum|-|pluralis|tertia|-|-|-|coniunctivus|activa|praesens|perfectivus': [
         'fuerint'
     ],
-    'verbum|-|singularis|prima|-|-|-|coniunctivus|activa|praeteritus|perfectivus': [
+    'verbum|-|singularis|prima|-|-|-|coniunctivus|activa|praeteritum|perfectivus': [
         'fuissem'
     ],
-    'verbum|-|singularis|secunda|-|-|-|coniunctivus|activa|praeteritus|perfectivus': [
+    'verbum|-|singularis|secunda|-|-|-|coniunctivus|activa|praeteritum|perfectivus': [
         'fuissēs'
     ],
-    'verbum|-|singularis|tertia|-|-|-|coniunctivus|activa|praeteritus|perfectivus': [
+    'verbum|-|singularis|tertia|-|-|-|coniunctivus|activa|praeteritum|perfectivus': [
         'fuisset'
     ],
-    'verbum|-|pluralis|prima|-|-|-|coniunctivus|activa|praeteritus|perfectivus': [
+    'verbum|-|pluralis|prima|-|-|-|coniunctivus|activa|praeteritum|perfectivus': [
         'fuissēmus'
     ],
-    'verbum|-|pluralis|secunda|-|-|-|coniunctivus|activa|praeteritus|perfectivus': [
+    'verbum|-|pluralis|secunda|-|-|-|coniunctivus|activa|praeteritum|perfectivus': [
         'fuissētis'
     ],
-    'verbum|-|pluralis|tertia|-|-|-|coniunctivus|activa|praeteritus|perfectivus': [
+    'verbum|-|pluralis|tertia|-|-|-|coniunctivus|activa|praeteritum|perfectivus': [
         'fuissent'
     ],
     'verbum|-|singularis|secunda|-|-|-|imperativus|activa|praesens|imperfectivus': [
@@ -195,16 +195,16 @@ export const sum: Verbum['inflectiones'] = {
     'verbum|-|pluralis|secunda|-|-|-|imperativus|activa|praesens|imperfectivus': [
         'este'
     ],
-    'verbum|-|singularis|secunda|-|-|-|imperativus|activa|futurus|imperfectivus': [
+    'verbum|-|singularis|secunda|-|-|-|imperativus|activa|futurum|imperfectivus': [
         'estō'
     ],
-    'verbum|-|singularis|tertia|-|-|-|imperativus|activa|futurus|imperfectivus': [
+    'verbum|-|singularis|tertia|-|-|-|imperativus|activa|futurum|imperfectivus': [
         'estō'
     ],
-    'verbum|-|pluralis|secunda|-|-|-|imperativus|activa|futurus|imperfectivus': [
+    'verbum|-|pluralis|secunda|-|-|-|imperativus|activa|futurum|imperfectivus': [
         'estōte'
     ],
-    'verbum|-|pluralis|tertia|-|-|-|imperativus|activa|futurus|imperfectivus': [
+    'verbum|-|pluralis|tertia|-|-|-|imperativus|activa|futurum|imperfectivus': [
         'suntō'
     ]
 }

@@ -25,24 +25,24 @@ async function combineParticipium(participii: LemmataParticipii, lemmaVerbi: str
     if (parses.every(Boolean) && parses.every(parse => parse.success)) {
         const successfulParses = parses as SuccessfulParseResultInput[]
         const praesensActiva = successfulParses[0].lexes[0]
-        const futurusActiva = successfulParses[1].lexes[0]
-        const praeteritusPassiva = successfulParses[2].lexes[0]
-        const futurusPassiva = successfulParses[3].lexes[0]
+        const futurumActiva = successfulParses[1].lexes[0]
+        const praeteritumPassiva = successfulParses[2].lexes[0]
+        const futurumPassiva = successfulParses[3].lexes[0]
         const participium: Participium = {
             pars: 'participium',
             inflectiones: {
                 ...praesensActiva.inflectiones,
-                ...futurusActiva.inflectiones,
-                ...praeteritusPassiva.inflectiones,
-                ...futurusPassiva.inflectiones,
+                ...futurumActiva.inflectiones,
+                ...praeteritumPassiva.inflectiones,
+                ...futurumPassiva.inflectiones,
             },
             lexicographia: {
                 lemma: praesensActiva.lexicographia.lemma,
                 radices: [
                     praesensActiva.lexicographia.lemma,
-                    futurusActiva.lexicographia.lemma,
-                    praeteritusPassiva.lexicographia.lemma,
-                    futurusPassiva.lexicographia.lemma,
+                    futurumActiva.lexicographia.lemma,
+                    praeteritumPassiva.lexicographia.lemma,
+                    futurumPassiva.lexicographia.lemma,
                 ],
                 etymologia: [],
                 pronunciatio: [],

@@ -40,11 +40,11 @@ const finitivusCellOrder: { numerus: Numerus, persona: StatusFinitivi['persona']
 
 const infinitiveCellOrder: { vox: Vox, tempus: Tempus }[] = [
     {vox: 'activa', tempus: 'praesens'},
-    {vox: 'activa', tempus: 'praeteritus'},
-    {vox: 'activa', tempus: 'futurus'},
+    {vox: 'activa', tempus: 'praeteritum'},
+    {vox: 'activa', tempus: 'futurum'},
     {vox: 'passiva', tempus: 'praesens'},
-    {vox: 'passiva', tempus: 'praeteritus'},
-    {vox: 'passiva', tempus: 'futurus'},
+    {vox: 'passiva', tempus: 'praeteritum'},
+    {vox: 'passiva', tempus: 'futurum'},
 ]
 
 const gerundiumCellOrder: Casus[][] = [
@@ -65,15 +65,15 @@ function translateTempus(s: string): [Tempus, Aspectus] {
         case 'present':
             return ['praesens', 'imperfectivus']
         case 'imperfect':
-            return ['praeteritus', 'imperfectivus']
+            return ['praeteritum', 'imperfectivus']
         case 'future':
-            return ['futurus', 'imperfectivus']
+            return ['futurum', 'imperfectivus']
         case 'perfect':
             return ['praesens', 'perfectivus']
         case 'pluperfect':
-            return ['praeteritus', 'perfectivus']
+            return ['praeteritum', 'perfectivus']
         case 'future perfect':
-            return ['futurus', 'perfectivus']
+            return ['futurum', 'perfectivus']
         default: {
             throw new Error(`Unknown tempus ${s}`)
         }
@@ -283,9 +283,9 @@ export function parseTabluamVerbiWiktionary(tableNode: CheerioElement, $: Cheeri
     
     const participleOrder: [(keyof LemmataParticipii), Tempus, Vox][] = [
         ['praesensActiva', 'praesens', 'activa'],
-        ['futurusActiva', 'futurus', 'activa'],
-        ['praeteritusPassiva', 'praeteritus', 'passiva'],
-        ['futurusPassiva', 'futurus', 'passiva'],
+        ['futurumActiva', 'futurum', 'activa'],
+        ['praeteritumPassiva', 'praeteritum', 'passiva'],
+        ['futurumPassiva', 'futurum', 'passiva'],
     ]
     
     function getLemmataParticipii($row: Cheerio): LemmataParticipii {

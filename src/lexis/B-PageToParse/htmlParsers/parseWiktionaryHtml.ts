@@ -501,10 +501,10 @@ function guessParticipleTemporem(s: string): Tempus {
         return 'praesens'
     }
     else if (s.includes('perfect') || s.includes('past')) {
-        return 'praeteritus'
+        return 'praeteritum'
     }
     else if (s.includes('future')) {
-        return 'futurus'
+        return 'futurum'
     }
     else {
         throw new Error(`Cannot guess participle time from ${s}`)
