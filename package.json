@@ -9,6 +9,7 @@
     "collect-lexes": "./cmd.sh collect-lexes",
     "make-dict": "./cmd.sh make-dict",
     "analyse-books": "./cmd.sh analyse-books",
+    "translate-treebanks": "./cmd.sh translate-treebanks",
     "compile": "./compile.sh",
     "prepublishOnly": "npm run compile"
   },

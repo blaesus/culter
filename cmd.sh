@@ -19,4 +19,7 @@ case $1 in
   "analyse-books")
     ts-node src/corpus/analyseBooks.ts $2
   ;;
+  "translate-treebanks")
+    ts-node src/corpus/translateTreebanks.ts
+  ;;
 esac
