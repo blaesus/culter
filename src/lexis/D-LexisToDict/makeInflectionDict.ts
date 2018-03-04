@@ -1,14 +1,7 @@
 import { database } from 'lexis/database'
-import { Pars, SeriesStatus, Status } from 'lexis'
 import { demacron, fallbackProxy } from 'utils'
 import { data } from 'lexis/data'
-
-export interface InflectedFormDesignation {
-    lemma: string
-    pars: Pars
-    forma: string
-    status: SeriesStatus<Status>
-}
+import { InflectedFormDesignation } from 'analysis/Model'
 
 export type InflectionDict = {
     [forma in string]: InflectedFormDesignation[]

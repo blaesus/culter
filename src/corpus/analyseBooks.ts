@@ -1,8 +1,9 @@
 import { database } from 'lexis/database'
 import { getTokens } from 'corpus/tokenizeBooks'
 import { fallbackProxy, flatten } from 'utils'
-import { analyse, KnownTokenAnalysis, UnknownTokenAnalysis } from 'analysis/analyse'
 import { data } from 'lexis/data'
+import { KnownTokenAnalysis, UnknownTokenAnalysis } from 'analysis/Model'
+import { analyse } from '../'
 
 const fallbackAuthors = ['caesar', 'cicero', 'aquinas']
 
@@ -29,8 +30,8 @@ async function main() {
         inflectionDict,
         frequencyTable,
     })
-    const knownResults = results.filter(result => result.type === 'known') as KnownTokenAnalysis[]
-    const unknownResults = results.filter(result => result.type === 'unknown') as UnknownTokenAnalysis[]
+    const knownResults = results.filter(result => result.type === 'notus') as KnownTokenAnalysis[]
+    const unknownResults = results.filter(result => result.type === 'ignotus') as UnknownTokenAnalysis[]
     const lemmata = knownResults.map(result => result.lemma)
 
     const verbCounter = fallbackProxy<{[key in string]: number}>({}, () => 0)
@@ -48,7 +49,7 @@ async function main() {
     }
     const unkownCounter = fallbackProxy<{[key in string]: number}>({}, () => 0)
     for (const result of unknownResults) {
-        unkownCounter[result.token] += 1
+        unkownCounter[result.forma] += 1
     }
     const unkwownEntries = Object.entries(unkownCounter).sort((entryA, entryB) => entryB[1] - entryA[1])
     console.info('unknowns')

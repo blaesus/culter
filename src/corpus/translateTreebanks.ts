@@ -2,12 +2,12 @@ import * as cheerio from 'cheerio'
 import { readdirAsync, readFileAsync, writeFileAsync } from 'nodeUtils'
 import { radixCache } from 'config'
 import { join } from 'path'
-import { KnownTokenAnalysis } from 'analysis/analyse'
 import {
     Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, ParsMinor, Persona, serializeStatum, Status, Tempus,
     Vox
 } from 'lexis'
 import { removeNullItems } from 'utils'
+import { KnownTokenAnalysis } from 'analysis/Model'
 
 type Tabula<T> = {[key in string]?: T}
 
@@ -172,7 +172,7 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
             const { pars, status } = parse
             const analysis: KnownTokenAnalysis = {
                 type: 'notus',
-                token: word.attribs['form'],
+                forma: word.attribs['form'],
                 lemma: word.attribs['lemma'],
                 pars,
                 status: serializeStatum(pars, status),
@@ -354,7 +354,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
             const status = parseStatusString(token.attribs['morphology'])
             const analysis: KnownTokenAnalysis = {
                 type: 'notus',
-                token: token.attribs['form'],
+                forma: token.attribs['form'],
                 lemma: token.attribs['lemma'],
                 pars,
                 parsMinor,

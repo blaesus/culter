@@ -1,28 +1,7 @@
-import { Lexis, Pars, ParsMinor, SeriesStatus } from 'lexis'
-import { InflectedFormDesignation, InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
+import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { FrequencyTable } from './makeCrudeFrequencyTable'
 import { demacron, reverseCapitalize } from 'utils'
-
-export interface UnknownTokenAnalysis {
-    type: 'ignotus'
-    token: string
-}
-
-export interface KnownTokenAnalysis {
-    type: 'notus'
-    token: string
-    lemma: string
-    pars: Pars
-    parsMinor?: ParsMinor
-    status?: SeriesStatus<Lexis>
-}
-
-export interface SkipTokenAnalysis {
-    type: 'neglectus'
-    token: string
-}
-
-export type TokenAnalysis = UnknownTokenAnalysis | KnownTokenAnalysis | SkipTokenAnalysis
+import { InflectedFormDesignation, TokenAnalysis } from 'analysis/Model'
 
 export interface AnalyserData {
     inflectionDict: InflectionDict
@@ -53,21 +32,21 @@ function shouldSkip(token: string): boolean {
     return isArabicNumerals(token) || isRomanNumerals(token)
 }
 
-function getResult(token: string, data: AnalyserData): TokenAnalysis {
-    if (shouldSkip(token)) {
+function getResult(forma: string, data: AnalyserData): TokenAnalysis {
+    if (shouldSkip(forma)) {
         return {
             type: 'neglectus',
-            token
+            forma
         }
     }
     const {inflectionDict, frequencyTable} = data
     let designations: InflectedFormDesignation[] = []
-    let originalDesignations = inflectionDict[token]
+    let originalDesignations = inflectionDict[forma]
     if (originalDesignations) {
         designations = originalDesignations
     }
     else {
-        const altToken = reverseCapitalize(token)
+        const altToken = reverseCapitalize(forma)
         designations = inflectionDict[altToken]
         if (!designations) {
             designations = originalDesignations || []
@@ -80,7 +59,7 @@ function getResult(token: string, data: AnalyserData): TokenAnalysis {
         )
         return {
             type: 'notus',
-            token,
+            forma,
             pars: designation.pars,
             lemma: designation.lemma,
             status: designation.status
@@ -89,7 +68,7 @@ function getResult(token: string, data: AnalyserData): TokenAnalysis {
     else {
         return {
             type: 'ignotus',
-            token,
+            forma,
         }
     }
 }
