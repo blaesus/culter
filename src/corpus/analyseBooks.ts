@@ -25,7 +25,7 @@ async function main() {
     const inflectionDict = await data.getInflectionDict()
     const frequencyTable = await data.getFrequencyTable()
     console.info('loaded')
-    const results = await analyse(tokens, {
+    const results = analyse(tokens, {
         inflectionDict,
         frequencyTable,
     })

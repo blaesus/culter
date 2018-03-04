@@ -93,7 +93,7 @@ function getResult(token: string, data: AnalyserData): TokenAnalysis {
     }
 }
 
-export async function analyse(tokens: string[], data: AnalyserData): Promise<TokenAnalysis[]> {
+export function analyse(tokens: string[], data: AnalyserData): TokenAnalysis[] {
     const results: TokenAnalysis[] = []
     for (let i = 0; i < tokens.length; i += 1) {
         if (i % 1000 === 0) console.info(`${i}/${tokens.length}`)
