@@ -10,13 +10,13 @@ import {
     Vox
 } from 'lexis'
 import { removeNullItems } from 'utils'
-import { KnownTokenAnalysis, Treebank, TreebankDatabase, TreebankStatistic } from 'analysis/Model'
+import { InflectedFormDesignation, Treebank, TreebankDatabase, TreebankStatistic } from 'analysis/Model'
 
 type Tabula<T> = {[key in string]?: T}
 
 type Mood = Modus | Pars | 'gerundivus' // "gerundive"
 
-function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
+function translatePerseusTreebank(xml: string): InflectedFormDesignation[][] {
     
     const perseusParsTable: Tabula<Pars> = {
         n: 'nomen-substantivum',
@@ -127,12 +127,11 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         }
     }
     
-    function parseWordElement(word: CheerioElement): KnownTokenAnalysis | null {
+    function parseWordElement(word: CheerioElement): InflectedFormDesignation | null {
         try {
             const parse = parseSeriesPerseum(word.attribs['postag'])
             const { pars, status } = parse
-            const analysis: KnownTokenAnalysis = {
-                type: 'notus',
+            const analysis: InflectedFormDesignation = {
                 forma: word.attribs['form'],
                 lemma: word.attribs['lemma'].replace(/\d/, ''),
                 pars,
@@ -146,18 +145,18 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         }
     }
 
-    const results: KnownTokenAnalysis[][] = []
+    const results: InflectedFormDesignation[][] = []
     const $ = cheerio.load(xml, { xmlMode: true })
     
     for (const sentence of $('body sentence').toArray()) {
         const words = $(sentence).find('word').toArray()
-        const analyses: KnownTokenAnalysis[] = words.map(parseWordElement).reduce(removeNullItems, [])
+        const analyses: InflectedFormDesignation[] = words.map(parseWordElement).reduce(removeNullItems, [])
         results.push(analyses)
     }
     return results
 }
 
-function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
+function translateProielTreebank(xml: string): InflectedFormDesignation[][] {
     
     const parsTable: Tabula<[Pars, ParsMinor | undefined]> = {
         'A-': ['nomen-adiectivum', undefined],
@@ -303,13 +302,12 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         return status
     }
     
-    function parseTokenElement(token: CheerioElement): KnownTokenAnalysis | null {
+    function parseTokenElement(token: CheerioElement): InflectedFormDesignation | null {
         const parsParse = parsTable[token.attribs['part-of-speech']]
         if (parsParse) {
             const [pars, parsMinor] = parsParse
             const status = parseStatusString(token.attribs['morphology'])
-            const analysis: KnownTokenAnalysis = {
-                type: 'notus',
+            const analysis: InflectedFormDesignation = {
                 forma: token.attribs['form'],
                 lemma: token.attribs['lemma'],
                 pars,
@@ -324,17 +322,17 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         }
     }
     
-    const results: KnownTokenAnalysis[][] = []
+    const results: InflectedFormDesignation[][] = []
     const $ = cheerio.load(xml, { xmlMode: true})
     for (const sentence of $('source sentence').toArray()) {
         const tokens = $(sentence).find('token').toArray()
-        const analyses: KnownTokenAnalysis[] = tokens.map(parseTokenElement).reduce(removeNullItems, [])
+        const analyses: InflectedFormDesignation[] = tokens.map(parseTokenElement).reduce(removeNullItems, [])
         results.push(analyses)
     }
     return results
 }
 
-function transformToCulterFormat(result: KnownTokenAnalysis): KnownTokenAnalysis {
+function transformToCulterFormat(result: InflectedFormDesignation): InflectedFormDesignation {
     
     function estneModus(s: string): boolean {
         return modi.includes(s as any)
@@ -445,7 +443,7 @@ async function getProielTreebank(): Promise<Treebank> {
     return results
 }
 
-function translateThomisticusTreebank(xml: string): KnownTokenAnalysis[][] {
+function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][] {
     
     const parsTable: Tabula<Pars> = {
         1: 'nomen-substantivum', // substantivum + adiectivum
@@ -543,13 +541,12 @@ function translateThomisticusTreebank(xml: string): KnownTokenAnalysis[][] {
     
     const $ = cheerio.load(xml, { xmlMode: true})
     
-    function parseWordElement(element: CheerioElement): KnownTokenAnalysis | null{
+    function parseWordElement(element: CheerioElement): InflectedFormDesignation | null{
         
         try {
             const parse = parseTag($(element).find('tag').text())
             const { pars, status } = parse
             return {
-                type: 'notus',
                 forma: $(element).find('form').text(),
                 lemma: $(element).find('lemma').text(),
                 pars,
@@ -562,11 +559,11 @@ function translateThomisticusTreebank(xml: string): KnownTokenAnalysis[][] {
         }
     }
     
-    const results: KnownTokenAnalysis[][] = []
+    const results: InflectedFormDesignation[][] = []
     const sentences = $('s').toArray()
     for (const sentence of sentences) {
         const words = $(sentence).find('m').toArray()
-        const analyses: KnownTokenAnalysis[] = words.map(parseWordElement).reduce(removeNullItems, [])
+        const analyses: InflectedFormDesignation[] = words.map(parseWordElement).reduce(removeNullItems, [])
         results.push(analyses)
     }
     return results

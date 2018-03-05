@@ -24,7 +24,7 @@ export interface SkipTokenAnalysis {
 
 export type TokenAnalysis = UnknownTokenAnalysis | KnownTokenAnalysis | SkipTokenAnalysis
 
-export type Treebank = KnownTokenAnalysis[][]
+export type Treebank = InflectedFormDesignation[][]
 
 export type TreebankSource = 'perseus' | 'proiel' | 'thomisticus'
 
