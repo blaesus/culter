@@ -26,7 +26,7 @@ export type TokenAnalysis = UnknownTokenAnalysis | KnownTokenAnalysis | SkipToke
 
 export type Treebank = KnownTokenAnalysis[][]
 
-export type TreebankSource = 'perseus' | 'proiel'
+export type TreebankSource = 'perseus' | 'proiel' | 'thomisticus'
 
 export interface TreebankStatistic {
     sentence: number

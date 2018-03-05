@@ -1,10 +1,11 @@
 import { join } from 'path'
 import * as cheerio from 'cheerio'
-import { readdirAsync, readFileAsync } from 'nodeUtils'
+import { globAsync, readdirAsync, readFileAsync } from 'nodeUtils'
 import { radixCache } from 'config'
 import { data } from 'lexis/data'
 import {
-    Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, parseSeriemStatus, ParsMinor, Persona, serializeStatum,
+    Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, parseSeriemStatus, ParsMinor, Participium, Persona,
+    serializeStatum,
     Status, StatusFinitivi, StatusParticipii, Tempus,
     Vox
 } from 'lexis'
@@ -346,7 +347,7 @@ function transformToCulterFormat(result: KnownTokenAnalysis): KnownTokenAnalysis
         if (!status) {
             return { }
         }
-        const mood = (status as any).modus
+        const mood = (status as any).modus as Mood
         
         if (estneModus(mood)) {
             return {
@@ -428,7 +429,7 @@ async function getPerseusTreebank(): Promise<Treebank> {
 }
 
 async function getProielTreebank(): Promise<Treebank> {
-    let results: KnownTokenAnalysis[][] = []
+    let results: Treebank = []
     const radixProiel = join(
         radixCache, 'proiel-treebank'
     )
@@ -444,6 +445,150 @@ async function getProielTreebank(): Promise<Treebank> {
     return results
 }
 
+function translateThomisticusTreebank(xml: string): KnownTokenAnalysis[][] {
+    
+    const parsTable: Tabula<Pars> = {
+        1: 'nomen-substantivum', // substantivum + adiectivum
+        2: 'participium',
+        3: 'verbum',
+        4: undefined,  //Invariable
+        5: undefined,  //Pseudo-lemma
+    }
+    
+    const gradusTable: Tabula<Gradus> = {
+        1: 'positivus',
+        2: 'comparativus',
+        3: 'superlativus',
+    }
+    
+    const voxMoodTable: Tabula<[Vox, Mood]> = {
+        A: ['activa', 'indicativus'],
+        J: ['passiva', 'indicativus'],
+        B: ['activa', 'coniunctivus'],
+        K: ['passiva', 'coniunctivus'],
+        C: ['activa', 'imperativus'],
+        L: ['passiva', 'imperativus'],
+        D: ['activa', 'participium'],
+        M: ['passiva', 'participium'],
+        E: ['activa', 'gerundium'],
+        N: ['passiva', 'gerundium'],
+        O: ['passiva', 'gerundivus'],
+        G: ['activa', 'supinum'],
+        P: ['passiva', 'supinum'],
+        H: ['activa', 'infinitivum'],
+        Q: ['passiva', 'infinitivum'],
+    }
+    
+    const tempusAspectusTable: Tabula<[Tempus, Aspectus]> = {
+        1: ['praesens', 'imperfectivus'],
+        2: ['praeteritum', 'imperfectivus'],
+        3: ['futurum', 'imperfectivus'],
+        4: ['praesens', 'perfectivus'],
+        5: ['praeteritum', 'perfectivus'],
+        6: ['futurum', 'perfectivus'],
+    }
+    
+    const numerusCasusTable: Tabula<[Numerus | undefined, Casus | Pars]> = {
+        A: ['singularis', 'nominativus'],
+        J: ['pluralis', 'nominativus'],
+        B: ['singularis', 'genetivus'],
+        K: ['pluralis', 'genetivus'],
+        C: ['singularis', 'dativus'],
+        L: ['pluralis', 'dativus'],
+        D: ['singularis', 'accusativus'],
+        M: ['pluralis', 'accusativus'],
+        E: ['singularis', 'vocativus'],
+        N: ['pluralis', 'vocativus'],
+        F: ['singularis', 'ablativus'],
+        O: ['pluralis', 'ablativus'],
+        G: [undefined, 'adverbium'],
+        // H: Casus “plurimus”
+    }
+    
+    const genusTable: Tabula<Genus> = {
+        1: 'masculinum',
+        2: 'femininum',
+        3: 'neutrum',
+    }
+    
+    function parseTag(tag: string): {pars: Pars, status: Status} {
+        const characters = tag.split('')
+        let pars = parsTable[characters[0]]
+        let gradus = gradusTable[characters[1]] || gradusTable[characters[5]]
+        let [vox, mood] = voxMoodTable[characters[3]] || [undefined, undefined]
+        let [tempus, aspectus] = tempusAspectusTable[characters[4]] || [undefined, undefined]
+        let [numerus, casus] = numerusCasusTable[characters[6]] || [undefined, undefined]
+        let genus = genusTable[characters[7]]
+        if (casus === 'adverbium') {
+            pars = 'adverbium'
+            casus = undefined
+        }
+        if (pars) {
+            return {
+                pars,
+                status: {
+                    gradus,
+                    tempus,
+                    aspectus,
+                    vox,
+                    modus: mood,
+                    numerus,
+                    casus,
+                    genus,
+                }
+            }
+        }
+        throw new Error('Cannot get pars')
+    }
+    
+    const $ = cheerio.load(xml, { xmlMode: true})
+    
+    function parseWordElement(element: CheerioElement): KnownTokenAnalysis | null{
+        
+        try {
+            const parse = parseTag($(element).find('tag').text())
+            const { pars, status } = parse
+            return {
+                type: 'notus',
+                forma: $(element).find('form').text(),
+                lemma: $(element).find('lemma').text(),
+                pars,
+                status: serializeStatum(pars, status)
+            }
+        }
+        catch (error) {
+            console.info(error.message)
+            return null
+        }
+    }
+    
+    const results: KnownTokenAnalysis[][] = []
+    const sentences = $('s').toArray()
+    for (const sentence of sentences) {
+        const words = $(sentence).find('m').toArray()
+        const analyses: KnownTokenAnalysis[] = words.map(parseWordElement).reduce(removeNullItems, [])
+        results.push(analyses)
+    }
+    return results
+}
+
+async function getThomisticusTreebank(): Promise<Treebank> {
+    let results: Treebank = []
+    const radixThomisticus = join(
+        radixCache,
+        '15-01-2018_all_resources_all_formats',
+        'IT-TB_PML_analytical-tectogrammatical_150118',
+        'IT-TB_PML_tectogrammatical_150118'
+    )
+    const viae = await globAsync(join(radixThomisticus, '**', '*.m'))
+    for (const via of viae) {
+        const text = await readFileAsync(via)
+        results = results.concat(translateThomisticusTreebank(text.toString()))
+    }
+    
+    return results
+}
+
 function reformat(treebank: Treebank): Treebank {
     return treebank.map(sentence => sentence.map(transformToCulterFormat))
 }
@@ -451,22 +596,25 @@ function reformat(treebank: Treebank): Treebank {
 function count(treebank: Treebank): TreebankStatistic {
     return {
         sentence: treebank.length,
-        token: treebank.map(sentence => sentence.length).reduce((a, b) => a + b)
+        token: treebank.map(sentence => sentence.length).reduce((a, b) => a + b, 0)
     }
 }
 
 async function main() {
     const perseus = reformat(await getPerseusTreebank())
     const proiel = reformat(await getProielTreebank())
+    const thomisticus = reformat(await getThomisticusTreebank())
     
     const treebankDB: TreebankDatabase = {
         statistics: {
             perseus: count(perseus),
             proiel: count(proiel),
+            thomisticus: count(thomisticus),
         },
         treebanks: {
             perseus,
             proiel,
+            thomisticus,
         }
     }
     
