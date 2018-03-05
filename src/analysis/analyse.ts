@@ -3,6 +3,7 @@ import { FrequencyTable } from './makeCrudeFrequencyTable'
 import { demacron, reverseCapitalize } from 'utils'
 import { InflectedFormDesignation, TokenAnalysis } from 'analysis/Model'
 import { isRomanNumerals } from 'corpus/tokenize'
+import { parseInflectionFormDesignationSeries } from 'serialization'
 
 export interface AnalyserData {
     inflectionDict: InflectionDict
@@ -34,15 +35,15 @@ function getResult(forma: string, data: AnalyserData): TokenAnalysis {
     }
     const {inflectionDict, frequencyTable} = data
     let designations: InflectedFormDesignation[] = []
-    let originalDesignations = inflectionDict[forma]
-    if (originalDesignations) {
-        designations = originalDesignations
+    const designationSeries = inflectionDict[forma]
+    if (designationSeries) {
+        designations = designationSeries.map(parseInflectionFormDesignationSeries)
     }
     else {
         const altToken = reverseCapitalize(forma)
-        designations = inflectionDict[altToken]
-        if (!designations) {
-            designations = originalDesignations || []
+        const altDesignationSeries = inflectionDict[altToken]
+        if (altDesignationSeries) {
+            designations = altDesignationSeries.map(parseInflectionFormDesignationSeries)
         }
     }
     if (designations.length > 0) {

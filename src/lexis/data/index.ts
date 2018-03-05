@@ -24,7 +24,7 @@ export const data = {
         return readJSONAsync(viaInflectionDict)
     },
     saveInflectionDict(dict: InflectionDict) {
-        return writeFileAsync(viaInflectionDict, compactstringify(dict))
+        return writeFileAsync(viaInflectionDict, beautyStringify(dict))
     },
     savePOSStat(data: any) {
         return writeFileAsync(viaPOSStat, compactstringify(data))

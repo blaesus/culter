@@ -1,10 +1,10 @@
 import { database } from 'lexis/database'
 import { demacron, fallbackProxy } from 'utils'
 import { data } from 'lexis/data'
-import { InflectedFormDesignation } from 'analysis/Model'
+import { MinimusSeriesStatus, parseSeriemStatus, serializeInflectedFormDesignation } from 'serialization'
 
 export type InflectionDict = {
-    [forma in string]: InflectedFormDesignation[]
+    [forma in string]: MinimusSeriesStatus[]
 }
 
 async function makeDict(clavisWithMacron: boolean) {
@@ -24,12 +24,14 @@ async function makeDict(clavisWithMacron: boolean) {
                 for (const forma of formae) {
                     const clavis = clavisWithMacron ? forma : demacron(forma)
                     inflectionDict[clavis] = inflectionDict[clavis].concat(
-                        {
-                            lemma: lexis.lexicographia.lemma,
-                            pars: lexis.pars,
-                            forma,
-                            status: seriesStatus
-                        }
+                        serializeInflectedFormDesignation(
+                            {
+                                lemma: lexis.lexicographia.lemma,
+                                pars: lexis.pars,
+                                forma,
+                                status: parseSeriemStatus(seriesStatus),
+                            }
+                        )
                     )
                 }
             }
