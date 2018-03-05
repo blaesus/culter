@@ -1,21 +1,23 @@
 import { FrequencyTable } from 'analysis/makeCrudeFrequencyTable'
 import { decapitalize } from 'utils'
 
-const punctuations: RegExp[] = [
-    /,/g,
-    /\./g,
-    /\[/g,
-    /]/g,
-    /\(/g,
-    /\)/g,
-    /;/g,
-    /\?/g,
-    /!/g,
-    /:/g,
-    /"/g,
-    /'/g,
-    /\*/g,
+export const punctuations: string[] = [
+    ',',
+    '.',
+    '[',
+    ']',
+    '(',
+    ')',
+    ';',
+    '?',
+    '!',
+    ':',
+    '"',
+    "'",
+    '*',
 ]
+
+const punctuationRegex: RegExp[] = punctuations.map(punctuation => new RegExp(punctuation, 'g'))
 
 const spaces: RegExp[] = [
     /\n/g,
@@ -24,8 +26,8 @@ const spaces: RegExp[] = [
 
 
 function cleanText(s: string): string {
-    for (const punctuation of punctuations) {
-        s = s.replace(punctuation, '')
+    for (const regex of punctuationRegex) {
+        s = s.replace(regex, '')
     }
     for (const space of spaces) {
         s = s.replace(space, ' ')
