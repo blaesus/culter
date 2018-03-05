@@ -49,7 +49,6 @@ async function makeDict(clavisWithMacron: boolean) {
     const inflectionDict = makeInflectionDict()
     const lexesIds = await database.getLexesInternalIds()
     console.info(lexesIds)
-    process.exit()
     // Iterative style for performance reasons
     let index = 0
     for (const id of lexesIds) {
