@@ -393,7 +393,7 @@ function transformToCulterFormat(result: InflectedFormDesignation): InflectedFor
     }
     
     if (result.status) {
-        const status: Status = parseSeriemStatus(result.status)
+        const status = result.status
         const { parsVera, statusMood } = translateStatus(status)
         const pars = parsVera || result.pars
         const parsMinor = result.parsMinor

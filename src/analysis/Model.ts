@@ -5,7 +5,7 @@ export interface InflectedFormDesignation {
     lemma: string
     pars: Pars
     parsMinor?: ParsMinor
-    status?: SeriesStatus<Lexis>
+    status?: Status
 }
 
 export interface UnknownTokenAnalysis {

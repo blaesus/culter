@@ -4,6 +4,7 @@ import { fallbackProxy, flatten } from 'utils'
 import { data } from 'lexis/data'
 import { KnownTokenAnalysis, UnknownTokenAnalysis } from 'analysis/Model'
 import { analyse } from '../'
+import { serializeStatum } from 'serialization'
 
 const fallbackAuthors = ['caesar', 'cicero', 'aquinas']
 
@@ -37,7 +38,8 @@ async function main() {
     const verbCounter = fallbackProxy<{[key in string]: number}>({}, () => 0)
     for (const result of knownResults) {
         if (result.pars === 'verbum' && result.status) {
-            verbCounter[result.status] += 1
+            const clavis = serializeStatum(result.pars, result.status, {parsMinor: result.parsMinor})
+            verbCounter[clavis] += 1
         }
     }
 
