@@ -5,7 +5,7 @@ import { radixCache } from 'config'
 import { data } from 'lexis/data'
 import {
     Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, parseSeriemStatus, ParsMinor, Persona, serializeStatum,
-    Status, Tempus,
+    Status, StatusFinitivi, StatusParticipii, Tempus,
     Vox
 } from 'lexis'
 import { removeNullItems } from 'utils'
@@ -14,10 +14,6 @@ import { KnownTokenAnalysis } from 'analysis/Model'
 type Tabula<T> = {[key in string]?: T}
 
 type Mood = Modus | Pars | 'gerundivus' // "gerundive"
-
-function estneModus(s: string): boolean {
-    return modi.includes(s as any)
-}
 
 function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
     
@@ -339,22 +335,28 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
 
 function transformToCulterFormat(result: KnownTokenAnalysis): KnownTokenAnalysis {
     
-    function translateMood(mood?: string): {
+    function estneModus(s: string): boolean {
+        return modi.includes(s as any)
+    }
+    
+    function translateStatus(status?: Status): {
         parsVera?: Pars
         statusMood?: Status
     } {
-        if (!mood) {
+        if (!status) {
             return { }
         }
-        else if (estneModus(mood)) {
+        const mood = (status as any).modus
+        
+        if (estneModus(mood)) {
             return {
                 parsVera: undefined,
                 statusMood: {
-                    modus: mood as Modus,
+                    modus: status as Modus,
                 },
             }
         }
-        else if (mood === 'gerundivus') {
+        if (mood === 'gerundivus') {
             return {
                 parsVera: 'participium',
                 statusMood: {
@@ -364,19 +366,32 @@ function transformToCulterFormat(result: KnownTokenAnalysis): KnownTokenAnalysis
                 }
             }
         }
-        else {
-            return {
-                parsVera: mood as Pars,
-                statusMood: {
-                    modus: undefined,
+        if (mood === 'participium') {
+            const statusParticipii = status as StatusParticipii & StatusFinitivi
+            // "perfective participle" => "past participle"
+            if (statusParticipii.tempus === 'praesens' && statusParticipii.aspectus === 'perfectivus') {
+                return {
+                    parsVera: 'participium',
+                    statusMood: {
+                        tempus: 'praeteritus',
+                        aspectus: undefined,
+                        modus: undefined,
+                    }
                 }
+            }
+        }
+        
+        return {
+            parsVera: mood as Pars,
+            statusMood: {
+                modus: undefined,
             }
         }
     }
     
     if (result.status) {
         const status: Status = parseSeriemStatus(result.status)
-        const { parsVera, statusMood } = translateMood((status as any).modus)
+        const { parsVera, statusMood } = translateStatus(status)
         const pars = parsVera || result.pars
         const parsMinor = result.parsMinor
         const newStatus = {
