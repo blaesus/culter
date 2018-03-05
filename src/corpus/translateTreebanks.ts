@@ -9,7 +9,7 @@ import {
     Vox
 } from 'lexis'
 import { removeNullItems } from 'utils'
-import { KnownTokenAnalysis } from 'analysis/Model'
+import { KnownTokenAnalysis, Treebank, TreebankDatabase, TreebankStatistic } from 'analysis/Model'
 
 type Tabula<T> = {[key in string]?: T}
 
@@ -410,8 +410,8 @@ function transformToCulterFormat(result: KnownTokenAnalysis): KnownTokenAnalysis
     }
 }
 
-async function main() {
-    let results: KnownTokenAnalysis[][] = []
+async function getPerseusTreebank(): Promise<Treebank> {
+    let results: Treebank = []
     
     // Perseus
     const radixPersei = join(
@@ -424,7 +424,11 @@ async function main() {
         results = results.concat(translatePerseusTreebank(text.toString()))
     }
     
-    // Proiel
+    return results
+}
+
+async function getProielTreebank(): Promise<Treebank> {
+    let results: KnownTokenAnalysis[][] = []
     const radixProiel = join(
         radixCache, 'proiel-treebank'
     )
@@ -437,9 +441,36 @@ async function main() {
         results = results.concat(translateProielTreebank(text.toString()))
     }
     
-    results = results.map(sentence => sentence.map(transformToCulterFormat))
+    return results
+}
+
+function reformat(treebank: Treebank): Treebank {
+    return treebank.map(sentence => sentence.map(transformToCulterFormat))
+}
+
+function count(treebank: Treebank): TreebankStatistic {
+    return {
+        sentence: treebank.length,
+        token: treebank.map(sentence => sentence.length).reduce((a, b) => a + b)
+    }
+}
+
+async function main() {
+    const perseus = reformat(await getPerseusTreebank())
+    const proiel = reformat(await getProielTreebank())
     
-    await data.saveTreebanks(results)
+    const treebankDB: TreebankDatabase = {
+        statistics: {
+            perseus: count(perseus),
+            proiel: count(proiel),
+        },
+        treebanks: {
+            perseus,
+            proiel,
+        }
+    }
+    
+    await data.saveTreebanks(treebankDB)
 }
 
 main()

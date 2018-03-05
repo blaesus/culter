@@ -25,3 +25,19 @@ export interface SkipTokenAnalysis {
 export type TokenAnalysis = UnknownTokenAnalysis | KnownTokenAnalysis | SkipTokenAnalysis
 
 export type Treebank = KnownTokenAnalysis[][]
+
+export type TreebankSource = 'perseus' | 'proiel'
+
+export interface TreebankStatistic {
+    sentence: number
+    token: number
+}
+
+export type TreebankDatabase = {
+    statistics: {
+        [treebank in TreebankSource]: TreebankStatistic
+    }
+    treebanks: {
+        [treebank in TreebankSource]: Treebank
+    }
+}
