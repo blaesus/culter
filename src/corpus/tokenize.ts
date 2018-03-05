@@ -17,7 +17,9 @@ export const punctuations: string[] = [
     '*',
 ]
 
-const punctuationRegex: RegExp[] = punctuations.map(punctuation => new RegExp(punctuation, 'g'))
+const punctuationRegex: RegExp[] = punctuations.map(punctuation => new RegExp(
+    `\\${punctuation}`, 'g'
+))
 
 const spaces: RegExp[] = [
     /\n/g,
