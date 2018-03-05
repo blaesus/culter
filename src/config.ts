@@ -1,5 +1,6 @@
 import { Lingua } from 'lexis'
 import * as path from 'path'
+import { TreebankSource } from 'analysis/Model'
 
 export const radixCache = './cache'
 
@@ -12,6 +13,6 @@ export const viaFrequencyTable = path.resolve(radixCache, 'frequencyTable.json')
 export const viaLemmata = path.resolve(radixCache, 'lemmata.json')
 export const viaFailureReport = path.resolve(radixCache, 'failures.json')
 export const viaPOSStat = path.resolve(radixCache, 'post_stat.json')
-export const viaTreebank = path.resolve(radixCache, 'treebanks.json')
+export const viaTreebank = (source: TreebankSource) => path.resolve(radixCache, `treebank-${source}.json`)
 
 export const LANG: Lingua = 'Anglica'

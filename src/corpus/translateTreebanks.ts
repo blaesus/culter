@@ -10,7 +10,10 @@ import {
     Vox
 } from 'lexis'
 import { removeNullItems } from 'utils'
-import { InflectedFormDesignation, Treebank, TreebankDatabase, TreebankStatistic } from 'analysis/Model'
+import {
+    InflectedFormDesignation, Treebank, TreebankSerialized, TreebankSource,
+    TreebankStatistic
+} from 'analysis/Model'
 import { isRomanNumerals, punctuations } from 'corpus/tokenize'
 
 type Tabula<T> = {[key in string]?: T}
@@ -617,26 +620,28 @@ function count(treebank: Treebank): TreebankStatistic {
     }
 }
 
+const treebankGetters: {[key in TreebankSource]: () => Promise<Treebank>} = {
+    perseus: getPerseusTreebank,
+    proiel: getProielTreebank,
+    thomisticus: getThomisticusTreebank,
+}
+
 async function main() {
-    const perseus = reformat(await getPerseusTreebank())
-    const proiel = reformat(await getProielTreebank())
-    const thomisticus = reformat(await getThomisticusTreebank())
-    
-    const treebankDB: TreebankDatabase = {
-        statistics: {
-            perseus: count(perseus),
-            proiel: count(proiel),
-            thomisticus: count(thomisticus),
-        },
-        treebanks: {
-            perseus,
-            proiel,
-            thomisticus,
-        }
+    const argv = process.argv[2]
+    let sources: TreebankSource[] = ['perseus', 'proiel', 'thomisticus']
+    if (argv) {
+        sources = [argv as TreebankSource]
     }
-    
-    console.info('Saving...')
-    await data.saveTreebanks(treebankDB)
+    for (const source of sources) {
+        const treebank = reformat(await treebankGetters[source]())
+        const statistics = count(treebank)
+        const treebankDump: TreebankSerialized = {
+            statistics,
+            treebank,
+        }
+        console.info(`Saving ${source}`, statistics)
+        await data.saveTreebank(treebankDump, source)
+    }
 }
 
 main()

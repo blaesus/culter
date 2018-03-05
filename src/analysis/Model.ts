@@ -33,11 +33,7 @@ export interface TreebankStatistic {
     token: number
 }
 
-export type TreebankDatabase = {
-    statistics: {
-        [treebank in TreebankSource]: TreebankStatistic
-    }
-    treebanks: {
-        [treebank in TreebankSource]: Treebank
-    }
+export type TreebankSerialized = {
+    statistics: TreebankStatistic
+    treebank: Treebank
 }
