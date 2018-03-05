@@ -352,7 +352,7 @@ function transformToCulterFormat(result: KnownTokenAnalysis): KnownTokenAnalysis
             return {
                 parsVera: undefined,
                 statusMood: {
-                    modus: status as Modus,
+                    modus: mood as Modus,
                 },
             }
         }
