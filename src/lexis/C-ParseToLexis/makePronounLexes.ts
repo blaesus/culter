@@ -9,7 +9,6 @@ import {
     PronomenPossessivum,
     PronomenReflexivum,
     PronomenRelativum,
-    serializeStatum,
     StatusPronomenInterrogativum,
     StatusPronominisDemonstrativi,
     StatusPronominisPersonalis,
@@ -17,6 +16,7 @@ import {
 } from 'lexis'
 import { caseOrderPronominum, lemmataPronominis, personaePrononimis, tabulaPronominum } from 'lexis/data/pronomina'
 import { LANG } from 'config'
+import { serializeStatum } from 'serialization'
 
 const numeri: Numerus[] = ['singularis', 'pluralis']
 const genera: Genus[] = ['masculinum', 'femininum', 'neutrum']

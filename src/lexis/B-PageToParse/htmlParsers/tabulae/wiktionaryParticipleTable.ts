@@ -1,13 +1,12 @@
 import {
     Inflectiones,
-    parseSeriemStatus,
-    serializeStatum,
     StatusAdiectivi,
     StatusParticipii,
     Tempus,
     Vox
-} from '../../../../lexis'
+} from 'lexis'
 import { parseTabluamAdiectivi } from './wiktionaryAdjectiveTable'
+import { parseSeriemStatus, serializeStatum } from 'serialization'
 
 export function parseTabluamParticipii(tableNode: CheerioElement,
                                        $: CheerioStatic,

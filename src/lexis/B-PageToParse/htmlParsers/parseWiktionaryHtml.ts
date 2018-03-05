@@ -21,23 +21,23 @@ import {
     Postpositio,
     Praepositio,
     Pronomen,
-    serializeStatum,
     StatusAdverbii,
     Tempus,
     Verbum,
     Vox
-} from '../../../lexis'
-import { LANG } from '../../../config'
+} from 'lexis'
+import { LANG } from 'config'
 import {
     AuxiliaryOutcomeTabulaeVerbi,
     parseTabluamVerbiWiktionary,
     TabulaeInformatio,
 } from './tabulae/wiktionaryVerbTable'
-import { flatten, loggingProxy } from '../../../utils'
+import { flatten, loggingProxy } from 'utils'
 import { parseTabluamSubstantivum } from './tabulae/wiktionaryNounTable'
 import { parseTabluamAdiectivi } from './tabulae/wiktionaryAdjectiveTable'
 import { parseTabluamParticipii } from './tabulae/wiktionaryParticipleTable'
 import { parseTabluamPronominis } from './tabulae/wiktionaryPronounTable'
+import { serializeStatum } from 'serialization'
 
 const nbsp = '\xa0'
 

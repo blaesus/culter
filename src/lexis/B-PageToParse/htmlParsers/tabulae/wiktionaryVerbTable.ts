@@ -9,7 +9,6 @@ import {
     Numerus,
     Pars,
     Participium,
-    serializeStatum,
     Status,
     StatusFinitivi,
     StatusGerundii,
@@ -19,10 +18,11 @@ import {
     Tempus,
     Verbum,
     Vox,
-} from '../../../../lexis'
+} from 'lexis'
 import { stringify } from 'querystring'
 import { sum } from './sum'
-import { splitMultipleFormae } from '../../../../utils'
+import { splitMultipleFormae } from 'utils'
+import { serializeStatum } from 'serialization'
 
 /**
  * @see https://en.wiktionary.org/wiki/Category:Latin_verb_inflection-table_templates

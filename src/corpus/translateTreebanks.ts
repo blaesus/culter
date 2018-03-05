@@ -4,8 +4,7 @@ import { globAsync, readdirAsync, readFileAsync } from 'nodeUtils'
 import { radixCache } from 'config'
 import { data } from 'lexis/data'
 import {
-    Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, parseSeriemStatus, ParsMinor, Participium, Persona,
-    serializeStatum,
+    Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, ParsMinor, Participium, Persona,
     Status, StatusFinitivi, StatusParticipii, Tempus,
     Vox
 } from 'lexis'
@@ -15,6 +14,7 @@ import {
     TreebankStatistic
 } from 'analysis/Model'
 import { isRomanNumerals, punctuations } from 'corpus/tokenize'
+import { parseSeriemStatus, serializeStatum } from 'serialization'
 
 type Tabula<T> = {[key in string]?: T}
 

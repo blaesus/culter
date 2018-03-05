@@ -7,14 +7,13 @@ import {
     Inflectiones,
     Lexis,
     NomenAdiectivum,
-    parseSeriemStatus,
     Participium,
-    serializeStatum,
     StatusAdiectivi
 } from 'lexis'
 import { LANG } from 'config'
 import { LemmataParticipii } from '../B-PageToParse/htmlParsers/tabulae/wiktionaryVerbTable'
 import { makePronounLexis } from './makePronounLexes'
+import { parseSeriemStatus, serializeStatum } from 'serialization'
 
 interface CompilerState {
     parseIds: string[]

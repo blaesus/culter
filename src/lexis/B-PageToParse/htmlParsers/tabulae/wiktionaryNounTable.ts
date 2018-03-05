@@ -1,6 +1,7 @@
-import { Inflectiones, Numerus, serializeStatum, StatusSubstantivi } from '../../../../lexis'
+import { Inflectiones, Numerus, StatusSubstantivi } from 'lexis'
 import { translateEnglishCase } from './translateCase'
-import { splitMultipleFormae } from '../../../../utils'
+import { splitMultipleFormae } from 'utils'
+import { serializeStatum } from 'serialization'
 
 const numeri: Numerus[] = ['singularis', 'pluralis']
 

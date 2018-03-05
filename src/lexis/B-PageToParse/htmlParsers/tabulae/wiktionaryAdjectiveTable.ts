@@ -1,6 +1,7 @@
-import { Casus, Genus, Gradus, Inflectiones, Numerus, serializeStatum, StatusAdiectivi } from '../../../../lexis'
+import { Casus, Genus, Gradus, Inflectiones, Numerus, StatusAdiectivi } from 'lexis'
 import { translateEnglishCase } from './translateCase'
-import { splitMultipleFormae } from '../../../../utils'
+import { splitMultipleFormae } from 'utils'
+import { serializeStatum } from 'serialization'
 
 function makeEmptyMFNTable(): string[][] {
     return [
