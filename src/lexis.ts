@@ -22,7 +22,7 @@ export type Pars =
     
     // partes immutabiles
     | 'coniunctio'
-    | 'prepositio'
+    | 'praepositio'
     | 'particula'
     | 'postpositio'
     | 'littera'
@@ -375,8 +375,8 @@ export interface Coniunctio extends LexisCommunis<{}> {
     pars: 'coniunctio'
 }
 
-export interface Prepositio extends LexisCommunis<{}> {
-    pars: 'prepositio'
+export interface Praepositio extends LexisCommunis<{}> {
+    pars: 'praepositio'
 }
 
 export interface Postpositio extends LexisCommunis<{}> {
@@ -413,7 +413,7 @@ export type Lexis =
     | Supinum
     | Participium
     | Coniunctio
-    | Prepositio
+    | Praepositio
     | Particula
     | Postpositio
     | Littera

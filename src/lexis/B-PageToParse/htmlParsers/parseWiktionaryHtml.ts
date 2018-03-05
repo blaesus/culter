@@ -19,7 +19,7 @@ import {
     ParsMinor,
     Participium,
     Postpositio,
-    Prepositio,
+    Praepositio,
     Pronomen,
     serializeStatum,
     StatusAdverbii,
@@ -200,7 +200,7 @@ function translateWiktionaryPart(part: PartsWiktionary): Lexis['pars'] {
         case 'Participle':
             return 'participium'
         case 'Preposition':
-            return 'prepositio'
+            return 'praepositio'
         case 'Particle':
             return 'particula'
         case 'Postposition':
@@ -475,7 +475,7 @@ const parseAdverbBrief: BriefParser<Adverbium> = (node, $) => {
     }
 }
 
-type HeadwordOnlyLexis = Coniunctio | Prepositio | Postpositio | Participium | Littera | Interiecio
+type HeadwordOnlyLexis = Coniunctio | Praepositio | Postpositio | Participium | Littera | Interiecio
 
 function headwordExtractor(pars: HeadwordOnlyLexis['pars']): BriefParser<HeadwordOnlyLexis> {
     const parser: BriefParser<HeadwordOnlyLexis> = (node, $) => {
@@ -548,7 +548,7 @@ const briefParsers: {[part in Section]?: (node: CheerioElement, $: CheerioStatic
     Numeral: parseAdjectiveBrief,
     Conjunction: headwordExtractor('coniunctio'),
     Participle: parseAdjectiveBrief,
-    Preposition: headwordExtractor('prepositio'),
+    Preposition: headwordExtractor('praepositio'),
     Particle: headwordExtractor('participium'),
     Article: parsePronounBrief,
     Postposition: headwordExtractor('postpositio'),
@@ -670,10 +670,10 @@ function getInitLexis(pars: Lexis['pars']): Lexis {
                 pars: 'coniunctio',
             }
         }
-        case 'prepositio': {
+        case 'praepositio': {
             return {
                 ...getBaseLexem(LANG),
-                pars: 'prepositio',
+                pars: 'praepositio',
             }
         }
         case 'particula': {

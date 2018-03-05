@@ -180,7 +180,7 @@ function translateProielTreebank(xml: string): InflectedFormDesignation[][] {
         'Pk': ['pronomen', 'pronomen-personale'], // personal reflexive pronoun, 'se'
         'Ps': ['pronomen', 'pronomen-possessivum'],
         'Pt': ['pronomen', 'pronomen-possessivum'], // possessive reflexive pronoun, 'suus'
-        'R-': ['prepositio', undefined],
+        'R-': ['praepositio', undefined],
         'Ne': ['nomen-substantivum', undefined], // proper noun
         'Dq': ['adverbium', undefined], // relative adverb
         'Pr': ['pronomen', 'pronomen-relativum'],
@@ -453,7 +453,7 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
         1: 'nomen-substantivum', // substantivum + adiectivum
         2: 'participium',
         3: 'verbum',
-        4: 'prepositio',  //Invariable
+        4: 'praepositio',  //Invariable
         5: undefined,  //Pseudo-lemma
     }
     
