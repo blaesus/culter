@@ -10,9 +10,29 @@ export const loggingProxy = <T extends {}>(obj: T, name: string, verbose = false
     },
 })
 
+const macronsPairs: [string, string][] = [
+    ['ā', 'a'],
+    ['ō', 'o'],
+    ['ī', 'i'],
+    ['ū', 'u'],
+    ['ē', 'e'],
+    ['Ā', 'A'],
+    ['Ō', 'O'],
+    ['Ī', 'I'],
+    ['Ū', 'U'],
+    ['Ē', 'E'],
+]
+
+const marcronsRegexPairs: [RegExp, string][] = macronsPairs.map(pair =>
+    [new RegExp(pair[0], 'g'), pair[1]] as [RegExp, string]
+)
+
 export function demacron(s?: string): string {
     s = s || ''
-    return s.replace(/ā/g, 'a').replace(/ō/g, 'o').replace(/ī/g, 'i').replace(/ū/g, 'u').replace(/ē/g, 'e')
+    for (const pair of marcronsRegexPairs) {
+        s = s.replace(pair[0], pair[1])
+    }
+    return s
 }
 
 type ObjectWithValueType = {
