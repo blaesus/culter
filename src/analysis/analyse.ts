@@ -2,6 +2,7 @@ import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { FrequencyTable } from './makeCrudeFrequencyTable'
 import { demacron, reverseCapitalize } from 'utils'
 import { InflectedFormDesignation, TokenAnalysis } from 'analysis/Model'
+import { isRomanNumerals } from 'corpus/tokenize'
 
 export interface AnalyserData {
     inflectionDict: InflectionDict
@@ -18,14 +19,6 @@ function getFrequency(lemma: string, frequencyTable: FrequencyTable): number {
 
 function isArabicNumerals(s: string): boolean {
     return /\d+/.test(s)
-}
-
-function isRomanNumeral(s: string): boolean {
-    return ['I', 'V', 'X', 'D', 'C', 'L', 'M'].includes(s.toUpperCase())
-}
-
-function isRomanNumerals(s: string): boolean {
-    return s.split('').every(isRomanNumeral)
 }
 
 function shouldSkip(token: string): boolean {

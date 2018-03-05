@@ -35,6 +35,15 @@ function cleanText(s: string): string {
     return s
 }
 
+function isRomanNumeral(s: string): boolean {
+    return ['I', 'V', 'X', 'D', 'C', 'L', 'M'].includes(s.toUpperCase())
+}
+
+export function isRomanNumerals(s: string): boolean {
+    return s.split('').every(isRomanNumeral)
+}
+
+
 export function tokenize(sentence: string, frequencyTable: FrequencyTable): string[] {
     const tokens = cleanText(decapitalize(sentence)).split(' ')
     for (let i = 0; i < tokens.length; i += 1) {
