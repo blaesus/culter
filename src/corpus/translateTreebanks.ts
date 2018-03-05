@@ -575,7 +575,7 @@ async function getThomisticusTreebank(): Promise<Treebank> {
         radixCache,
         '15-01-2018_all_resources_all_formats',
         'IT-TB_PML_analytical-tectogrammatical_150118',
-        'IT-TB_PML_tectogrammatical_150118'
+        'IT-TB_PML_analytical_150118',
     )
     const viae = await globAsync(join(radixThomisticus, '**', '*.m'))
     for (const via of viae) {
