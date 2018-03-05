@@ -4,7 +4,8 @@ import { readdirAsync, readFileAsync } from 'nodeUtils'
 import { radixCache } from 'config'
 import { data } from 'lexis/data'
 import {
-    Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, ParsMinor, Persona, serializeStatum, Status, Tempus,
+    Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, parseSeriemStatus, ParsMinor, Persona, serializeStatum,
+    Status, Tempus,
     Vox
 } from 'lexis'
 import { removeNullItems } from 'utils'
@@ -16,41 +17,6 @@ type Mood = Modus | Pars | 'gerundivus' // "gerundive"
 
 function estneModus(s: string): boolean {
     return modi.includes(s as any)
-}
-
-function translateMood(mood?: string): {
-    parsVera?: Pars
-    statusMood?: Status
-} {
-    if (!mood) {
-        return { }
-    }
-    else if (estneModus(mood)) {
-        return {
-            parsVera: undefined,
-            statusMood: {
-                modus: mood as Modus,
-            },
-        }
-    }
-    else if (mood === 'gerundivus') {
-        return {
-            parsVera: 'participium',
-            statusMood: {
-                tempus: 'futurum',
-                vox: 'passiva',
-                modus: undefined,
-            }
-        }
-    }
-    else {
-        return {
-            parsVera: mood as Pars,
-            statusMood: {
-                modus: undefined,
-            }
-        }
-    }
 }
 
 function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
@@ -142,8 +108,6 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
         const casus = perseusCasusTable[characters[7]]
         const gradus = perseusGradusTable[characters[8]]
         
-        const {parsVera, statusMood} = translateMood(mood)
-        
         const status: Status = {
             casus,
             persona,
@@ -154,11 +118,10 @@ function translatePerseusTreebank(xml: string): KnownTokenAnalysis[][] {
             genus,
             gradus,
             modus: mood,
-            ...statusMood,
         }
         if (pars) {
             return {
-                pars: parsVera || pars,
+                pars,
                 status,
             }
         }
@@ -318,7 +281,7 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         z: undefined,
     }
     
-    function parseStatusString(s: string): {status: Status, pars: Pars | undefined} {
+    function parseStatusString(s: string): Status {
         const characters = s.split('')
         const persona = personTable[characters[0]]
         const numerus = numberTable[characters[1]]
@@ -328,7 +291,6 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
         const genus = genusTable[characters[5]]
         const casus = caseTable[characters[6]]
         const gradus = gradusTable[characters[7]]
-        const {parsVera: pars, statusMood} = translateMood(mood)
         
         const status: Status = {
             persona,
@@ -340,12 +302,8 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
             genus,
             casus,
             gradus,
-            ...statusMood,
         }
-        return {
-            status,
-            pars
-        }
+        return status
     }
     
     function parseTokenElement(token: CheerioElement): KnownTokenAnalysis | null {
@@ -379,6 +337,63 @@ function translateProielTreebank(xml: string): KnownTokenAnalysis[][] {
     return results
 }
 
+function transformToCulterFormat(result: KnownTokenAnalysis): KnownTokenAnalysis {
+    
+    function translateMood(mood?: string): {
+        parsVera?: Pars
+        statusMood?: Status
+    } {
+        if (!mood) {
+            return { }
+        }
+        else if (estneModus(mood)) {
+            return {
+                parsVera: undefined,
+                statusMood: {
+                    modus: mood as Modus,
+                },
+            }
+        }
+        else if (mood === 'gerundivus') {
+            return {
+                parsVera: 'participium',
+                statusMood: {
+                    tempus: 'futurum',
+                    vox: 'passiva',
+                    modus: undefined,
+                }
+            }
+        }
+        else {
+            return {
+                parsVera: mood as Pars,
+                statusMood: {
+                    modus: undefined,
+                }
+            }
+        }
+    }
+    
+    if (result.status) {
+        const status: Status = parseSeriemStatus(result.status)
+        const { parsVera, statusMood } = translateMood((status as any).modus)
+        const pars = parsVera || result.pars
+        const parsMinor = result.parsMinor
+        const newStatus = {
+            ...status,
+            ...statusMood
+        }
+        const newStatusString = serializeStatum(pars, newStatus, {parsMinor})
+        return {
+            ...result,
+            pars,
+            status: newStatusString,
+        }
+    }
+    else {
+        return result
+    }
+}
 
 async function main() {
     let results: KnownTokenAnalysis[][] = []
@@ -406,6 +421,8 @@ async function main() {
         const text = await readFileAsync(via)
         results = results.concat(translateProielTreebank(text.toString()))
     }
+    
+    results = results.map(sentence => sentence.map(transformToCulterFormat))
     
     await data.saveTreebanks(results)
 }
