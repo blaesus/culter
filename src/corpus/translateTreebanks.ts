@@ -11,6 +11,7 @@ import {
 } from 'lexis'
 import { removeNullItems } from 'utils'
 import { InflectedFormDesignation, Treebank, TreebankDatabase, TreebankStatistic } from 'analysis/Model'
+import { isRomanNumerals, punctuations } from 'corpus/tokenize'
 
 type Tabula<T> = {[key in string]?: T}
 
@@ -449,7 +450,7 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
         1: 'nomen-substantivum', // substantivum + adiectivum
         2: 'participium',
         3: 'verbum',
-        4: undefined,  //Invariable
+        4: 'prepositio',  //Invariable
         5: undefined,  //Pseudo-lemma
     }
     
@@ -509,9 +510,21 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
         3: 'neutrum',
     }
     
-    function parseTag(tag: string): {pars: Pars, status: Status} {
+    function isPunctuation(s: string): boolean {
+        return punctuations.includes(s)
+    }
+    
+    function parseTag(tag: string, forma: string): {pars: Pars, status: Status} | null {
         const characters = tag.split('')
         let pars = parsTable[characters[0]]
+        if (!pars) {
+            if (isPunctuation(forma)) {
+                pars = 'punctum'
+            }
+            else if (isRomanNumerals(forma)) {
+                pars = 'nomen-adiectivum' // TODO: proper roman numeral handling
+            }
+        }
         let gradus = gradusTable[characters[1]] || gradusTable[characters[5]]
         let [vox, mood] = voxMoodTable[characters[3]] || [undefined, undefined]
         let [tempus, aspectus] = tempusAspectusTable[characters[4]] || [undefined, undefined]
@@ -536,36 +549,43 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
                 }
             }
         }
-        throw new Error('Cannot get pars')
-    }
-    
-    const $ = cheerio.load(xml, { xmlMode: true})
-    
-    function parseWordElement(element: CheerioElement): InflectedFormDesignation | null{
-        
-        try {
-            const parse = parseTag($(element).find('tag').text())
-            const { pars, status } = parse
-            return {
-                forma: $(element).find('form').text(),
-                lemma: $(element).find('lemma').text(),
-                pars,
-                status: serializeStatum(pars, status)
-            }
-        }
-        catch (error) {
-            console.info(error.message)
+        else {
+            console.error(`${forma}: cannot guess pars`)
             return null
         }
     }
     
-    const results: InflectedFormDesignation[][] = []
-    const sentences = $('s').toArray()
-    for (const sentence of sentences) {
-        const words = $(sentence).find('m').toArray()
-        const analyses: InflectedFormDesignation[] = words.map(parseWordElement).reduce(removeNullItems, [])
-        results.push(analyses)
+    const $ = cheerio.load(xml, { xmlMode: true })
+    
+    function parseWordElement(element: CheerioElement): InflectedFormDesignation | null{
+        
+        const forma = $(element).find('form').first().text()
+        const lemma = $(element).find('lemma').first().text()
+        const parse = parseTag($(element).find('tag').first().text(), forma)
+        if (parse) {
+            const { pars, status } = parse
+            return {
+                forma,
+                lemma,
+                pars,
+                status: serializeStatum(pars, status)
+            }
+            
+        }
+        return null
     }
+    
+    const results: InflectedFormDesignation[][] = []
+    $('s').each((sentenceIndex, sentence) => {
+        const analyses: InflectedFormDesignation[] = []
+        $(sentence).find('m').each((wordIndex, word) => {
+            const analysis = parseWordElement(word)
+            if (analysis) {
+                analyses.push(analysis)
+            }
+        })
+        results.push(analyses)
+    })
     return results
 }
 
@@ -615,6 +635,7 @@ async function main() {
         }
     }
     
+    console.info('Saving...')
     await data.saveTreebanks(treebankDB)
 }
 
