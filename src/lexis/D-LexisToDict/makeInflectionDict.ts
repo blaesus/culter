@@ -77,6 +77,7 @@ async function main() {
         else {
             console.info('cannot find lexis with id', lemma)
         }
+        process.exit()
     }
     else {
         makeDict(false)
