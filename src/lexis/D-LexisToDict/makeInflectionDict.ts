@@ -48,11 +48,16 @@ function mergeIntoDict(baseDict: InflectionDict, newDict: InflectionDict) {
 async function makeDict(clavisWithMacron: boolean) {
     const inflectionDict = makeInflectionDict()
     const lexesIds = await database.getLexesInternalIds()
+    console.info(lexesIds)
+    process.exit()
     // Iterative style for performance reasons
     let index = 0
     for (const id of lexesIds) {
         const lexis = await database.getLexisByInternalId(id)
-        if (!lexis) continue
+        if (!lexis) {
+            console.info('Cannot find lexis of id', id)
+            continue
+        }
         console.info(`${index++}/${lexesIds.length}`)
         const lexisDict = extractInflectionDictFromLexis(lexis, clavisWithMacron)
         mergeIntoDict(inflectionDict, lexisDict)
@@ -63,7 +68,19 @@ async function makeDict(clavisWithMacron: boolean) {
 
 async function main() {
     await database.connect()
-    makeDict(false)
+    const lemma = process.argv[2]
+    if (lemma) {
+        const lexes = await database.getLexesByLemma(lemma)
+        if (lexes) {
+            console.info(lexes.map(lexis => extractInflectionDictFromLexis(lexis)))
+        }
+        else {
+            console.info('cannot find lexis with id', lemma)
+        }
+    }
+    else {
+        makeDict(false)
+    }
 }
 
 if (require.main === module) {
