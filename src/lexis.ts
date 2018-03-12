@@ -347,6 +347,8 @@ export interface Verbum extends LexisCommunis<StatusFinitivi, LexicographiaVerbi
             futurumActiva?: string
             praeteritumPassiva?: string
             futurumPassiva?: string
+            praeteritumActiva?: string // tantum verbum deponens
+            praesensPassiva?: string // non in Lingua Latina
         }
         infinitivum: string | null
     }

@@ -283,7 +283,10 @@ export function parseTabluamVerbiWiktionary(tableNode: CheerioElement, $: Cheeri
     
     const participleOrder: [(keyof LemmataParticipii), Tempus, Vox][] = [
         ['praesensActiva', 'praesens', 'activa'],
+        ['praeteritumActiva', 'praeteritum', 'activa'],
         ['futurumActiva', 'futurum', 'activa'],
+
+        ['praesensPassiva', 'praesens', 'passiva'],
         ['praeteritumPassiva', 'praeteritum', 'passiva'],
         ['futurumPassiva', 'futurum', 'passiva'],
     ]
@@ -292,11 +295,13 @@ export function parseTabluamVerbiWiktionary(tableNode: CheerioElement, $: Cheeri
         const result: Verbum['lemmataAlii']['participii'] = {}
         const dataCells = $row.find('td').toArray()
         dataCells
-            .filter(cell => $(cell).text() !== '—')
             .forEach((cell, index) => {
                 const formae = getFormas($(cell).text())
                 const state = participleOrder[index]
-                result[state[0]] = formae[0]
+                const forma = formae[0]
+                if (forma !== '—') {
+                    result[state[0]] = forma
+                }
             })
         return result
     }
