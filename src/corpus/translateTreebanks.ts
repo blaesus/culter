@@ -509,10 +509,16 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
         // H: Casus “plurimus”
     }
     
-    const genusTable: Tabula<Genus> = {
-        1: 'masculinum',
-        2: 'femininum',
-        3: 'neutrum',
+    const table8: Tabula<[Genus | undefined, Persona | undefined, Numerus | undefined]> = {
+        1: ['masculinum', undefined, undefined],
+        2: ['femininum', undefined, undefined],
+        3: ['neutrum', undefined, undefined],
+        4: [undefined, 'prima', 'singularis'],
+        5: [undefined, 'secunda', 'singularis'],
+        6: [undefined, 'tertia', 'singularis'],
+        7: [undefined, 'prima', 'pluralis'],
+        8: [undefined, 'secunda', 'pluralis'],
+        9: [undefined, 'tertia', 'pluralis'],
     }
     
     function isPunctuation(s: string): boolean {
@@ -533,8 +539,9 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
         let gradus = gradusTable[characters[1]] || gradusTable[characters[5]]
         let [vox, mood] = voxMoodTable[characters[3]] || [undefined, undefined]
         let [tempus, aspectus] = tempusAspectusTable[characters[4]] || [undefined, undefined]
-        let [numerus, casus] = numerusCasusTable[characters[6]] || [undefined, undefined]
-        let genus = genusTable[characters[7]]
+        let [numerusNominis, casus] = numerusCasusTable[characters[6]] || [undefined, undefined]
+        let [genus, persona, numerusVerbi] = table8[characters[7]] || [undefined, undefined, undefined]
+        const numerus = numerusNominis || numerusVerbi
         if (casus === 'adverbium') {
             pars = 'adverbium'
             casus = undefined
@@ -551,6 +558,7 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
                     numerus,
                     casus,
                     genus,
+                    persona,
                 }
             }
         }
