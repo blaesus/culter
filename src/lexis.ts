@@ -329,8 +329,10 @@ export type Status =
     | StatusParticipii
     | StatusImmutabilis
 
+export type ThemaVerbi = 'ā' | 'ē' | 'e' | 'consonans' | 'ī' | 'irregularis' | 'ignotum'
+
 export interface LexicographiaVerbi extends LexicographiaLexisCommunis {
-    thema: 'ā' | 'ē' | 'e' | 'consonans' | 'ī' | 'irregularis' | 'ignotum'
+    thema: ThemaVerbi
     deponens: 'deponens' | 'semi-deponens' | 'non-deponens'
     numquamPerfectum: boolean
 }

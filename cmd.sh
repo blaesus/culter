@@ -22,4 +22,7 @@ case $1 in
   "translate-treebanks")
     ts-node src/corpus/translateTreebanks.ts $2
   ;;
+  "execute")
+    ts-node $2
+  ;;
 esac

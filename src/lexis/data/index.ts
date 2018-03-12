@@ -1,8 +1,12 @@
 import { readFileAsync, readJSONAsync, writeFileAsync } from 'nodeUtils'
-import { viaFrequencyTable, viaInflectionDict, viaLemmata, viaPOSStat, viaTreebank } from 'config'
+import {
+    viaFrequencyTable, viaInflectionDict, viaLemmata, viaPOSStat, viaTabulaeParticipiorum,
+    viaTreebank,
+} from 'config'
 import { FrequencyTable } from 'analysis/makeCrudeFrequencyTable'
 import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { TreebankSerialized, TreebankSource } from 'analysis/Model'
+import { TabulaParticipiorum } from 'analysis/makeTabulamParticipiorum'
 
 const beautyStringify = (obj: {}) => JSON.stringify(obj, null, 4)
 const compactstringify = (obj: {}) => JSON.stringify(obj)
@@ -34,5 +38,11 @@ export const data = {
     },
     getTreebanks(source: TreebankSource): Promise<TreebankSerialized> {
         return readJSONAsync(viaTreebank(source))
+    },
+    saveTabulamParticipiorum(data: TabulaParticipiorum) {
+        return writeFileAsync(viaTabulaeParticipiorum, beautyStringify(data))
+    },
+    getTabulamParticipiorum(): Promise<TabulaParticipiorum> {
+        return readJSONAsync(viaTabulaeParticipiorum)
     },
 }

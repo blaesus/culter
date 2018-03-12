@@ -5,20 +5,24 @@ import { radixCache } from 'config'
 import { data } from 'lexis/data'
 import {
     Aspectus, Casus, Genus, Gradus, modi, Modus, Numerus, Pars, ParsMinor, Participium, Persona,
-    Status, StatusFinitivi, StatusParticipii, Tempus,
-    Vox
+    Status, StatusFinitivi, StatusParticipii, Tempus, ThemaVerbi,
+    Vox,
 } from 'lexis'
-import { removeNullItems } from 'utils'
+import { removeNullItems, stripVoid } from 'utils'
 import {
     InflectedFormDesignation, Treebank, TreebankSerialized, TreebankSource,
     TreebankStatistic
 } from 'analysis/Model'
 import { isRomanNumerals, punctuations } from 'corpus/tokenize'
-import { parseSeriemStatus, serializeStatum } from 'serialization'
+import { TabulaParticipiorum } from 'analysis/makeTabulamParticipiorum'
 
 type Tabula<T> = {[key in string]?: T}
 
 type Mood = Modus | Pars | 'gerundivus' // "gerundive"
+
+function cleanLemma(lemma: string): string {
+    return lemma.replace(/\d/g, '').replace(/\(/g, '').replace(/\)/g, '')
+}
 
 function translatePerseusTreebank(xml: string): InflectedFormDesignation[][] {
     
@@ -137,9 +141,9 @@ function translatePerseusTreebank(xml: string): InflectedFormDesignation[][] {
             const { pars, status } = parse
             const analysis: InflectedFormDesignation = {
                 forma: word.attribs['form'],
-                lemma: word.attribs['lemma'].replace(/\d/, ''),
+                lemma: cleanLemma(word.attribs['lemma']),
                 pars,
-                status: serializeStatum(pars, status),
+                status,
             }
             return analysis
         }
@@ -313,10 +317,10 @@ function translateProielTreebank(xml: string): InflectedFormDesignation[][] {
             const status = parseStatusString(token.attribs['morphology'])
             const analysis: InflectedFormDesignation = {
                 forma: token.attribs['form'],
-                lemma: token.attribs['lemma'],
+                lemma: cleanLemma(token.attribs['lemma']),
                 pars,
                 parsMinor,
-                status: serializeStatum(pars, status),
+                status,
             }
             return analysis
         }
@@ -337,7 +341,7 @@ function translateProielTreebank(xml: string): InflectedFormDesignation[][] {
 }
 
 function transformToCulterFormat(result: InflectedFormDesignation): InflectedFormDesignation {
-    
+
     function estneModus(s: string): boolean {
         return modi.includes(s as any)
     }
@@ -396,16 +400,14 @@ function transformToCulterFormat(result: InflectedFormDesignation): InflectedFor
         const status = result.status
         const { parsVera, statusMood } = translateStatus(status)
         const pars = parsVera || result.pars
-        const parsMinor = result.parsMinor
-        const newStatus = {
+        const newStatus = stripVoid({
             ...status,
             ...statusMood
-        }
-        const newStatusString = serializeStatum(pars, newStatus, {parsMinor})
+        })
         return {
             ...result,
             pars,
-            status: newStatusString,
+            status: newStatus,
         }
     }
     else {
@@ -563,7 +565,7 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
     function parseWordElement(element: CheerioElement): InflectedFormDesignation | null{
         
         const forma = $(element).find('form').first().text()
-        const lemma = $(element).find('lemma').first().text()
+        const lemma = cleanLemma($(element).find('lemma').first().text())
         const parse = parseTag($(element).find('tag').first().text(), forma)
         if (parse) {
             const { pars, status } = parse
@@ -571,7 +573,7 @@ function translateThomisticusTreebank(xml: string): InflectedFormDesignation[][]
                 forma,
                 lemma,
                 pars,
-                status: serializeStatum(pars, status)
+                status,
             }
             
         }
@@ -613,6 +615,22 @@ function reformat(treebank: Treebank): Treebank {
     return treebank.map(sentence => sentence.map(transformToCulterFormat))
 }
 
+function translateLemmaParticipii(treebank: Treebank, tabulaParticipiorum: TabulaParticipiorum): Treebank {
+    return treebank.map(sentence => sentence.map(designation => {
+        if (designation.pars === 'participium') {
+            const lemmaParticipium = tabulaParticipiorum[designation.lemma]
+            if (lemmaParticipium) {
+                return {
+                    ...designation,
+                    lemma: lemmaParticipium,
+                }
+            }
+            console.info('Cannot find lemma participii of', designation.lemma)
+        }
+        return designation
+    }))
+}
+
 function count(treebank: Treebank): TreebankStatistic {
     return {
         sentence: treebank.length,
@@ -632,8 +650,10 @@ async function main() {
     if (argv) {
         sources = [argv as TreebankSource]
     }
+    const tabulamThematum = await data.getTabulamParticipiorum()
     for (const source of sources) {
-        const treebank = reformat(await treebankGetters[source]())
+        const rawTreebank = await treebankGetters[source]()
+        const treebank = translateLemmaParticipii(reformat(rawTreebank), tabulamThematum)
         const statistics = count(treebank)
         const treebankDump: TreebankSerialized = {
             statistics,

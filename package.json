@@ -11,6 +11,7 @@
     "analyse-books": "./cmd.sh analyse-books",
     "translate-treebanks": "./cmd.sh translate-treebanks",
     "compile": "./compile.sh",
+    "execute": "./cmd.sh execute",
     "prepublishOnly": "npm run compile"
   },
   "repository": {

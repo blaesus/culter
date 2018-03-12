@@ -37,7 +37,7 @@ export function demacron(s?: string): string {
 
 type ObjectWithValueType = {
     [key in string]: any
-    }
+}
 
 export const fallbackProxy = <T extends ObjectWithValueType>(obj: T, fallback: () => any): T => new Proxy(obj, {
     get(target, key) {
@@ -84,4 +84,14 @@ export function removeNullItems<T>(accumulated: T[], next: T | null): T[] {
         return accumulated.concat(next)
     }
     return accumulated
+}
+
+export function stripVoid<T extends ObjectWithValueType>(obj: T): T {
+    const result: T = {...(obj as any)}
+    for (const key in result) {
+        if (typeof result[key] === 'undefined' || result[key] === null) {
+            delete result[key]
+        }
+    }
+    return result
 }
