@@ -103,6 +103,7 @@ type GeneralSection =
     | 'Quotations'
     | 'Coordinate terms'
     | 'Usage notes'
+    | 'Synonyms'
 
 type Section = GeneralSection | PartsWiktionary
 
@@ -122,6 +123,7 @@ function getGeneralSection(s: string | null): GeneralSection | null {
         || s === 'Quotations'
         || s === 'Coordinate terms'
         || s === 'Usage notes'
+        || s === 'Synonyms'
     ) {
         return s
     }
@@ -806,6 +808,12 @@ export function parseWiktionaryLexemeGroup(nodes: CheerioElement[], $: CheerioSt
             gradus: 'positivus' as 'positivus'
         },
     }, 'state')
+
+    function isEtymologyDescriptionOfParticipium(text: string): boolean {
+        // Need to tell part "Present active participle of amō (“love”)."
+        // and "Apparently denominative from Proto-Indo-European *ph₁-tós, participle of *peh₁- (“to hurt”)."
+        return text.includes('participle') && text.length < 100
+    }
     
     function initParsingResult(part: PartsWiktionary) {
         const initData = getInitLexis(translateWiktionaryPart(part))
@@ -886,7 +894,7 @@ export function parseWiktionaryLexemeGroup(nodes: CheerioElement[], $: CheerioSt
                         state.incomingBrief = false
                     }
                 }
-                if (generalSection === 'Etymology' && text.includes('participle')) {
+                if (generalSection === 'Etymology' && isEtymologyDescriptionOfParticipium(text)) {
                     const loweredText = text.toLowerCase()
                     state.participium = {
                         vox: loweredText.includes('passive') ? 'passiva' : 'activa',
