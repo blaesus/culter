@@ -1060,6 +1060,7 @@ function isRedirection(node: CheerioElement, $: CheerioStatic): boolean {
                     definition.length
                     && definitionText
                     && !definitionText.includes('Alternative form of')
+                    && !definitionText.includes('Alternative spelling of')
                     && !definitionText.includes('superlative degree of')
                 return !!isRedirection
             }
