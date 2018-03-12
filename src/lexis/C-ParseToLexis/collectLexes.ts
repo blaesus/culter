@@ -19,45 +19,43 @@ interface CompilerState {
     parseIds: string[]
 }
 
-async function combineParticipium(participii: LemmataParticipii, lemmaVerbi: string): Promise<Participium | null> {
-    const parses = await Promise.all(Object.values(participii).map(demacron).map(lemma => getParseByEntry(lemma)))
-    if (parses.every(Boolean) && parses.every(parse => parse.success)) {
-        const successfulParses = parses as SuccessfulParseResultInput[]
-        const praesensActiva = successfulParses[0].lexes[0]
-        const futurumActiva = successfulParses[1].lexes[0]
-        const praeteritumPassiva = successfulParses[2].lexes[0]
-        const futurumPassiva = successfulParses[3].lexes[0]
-        const participium: Participium = {
-            pars: 'participium',
-            inflectiones: {
-                ...praesensActiva.inflectiones,
-                ...futurumActiva.inflectiones,
-                ...praeteritumPassiva.inflectiones,
-                ...futurumPassiva.inflectiones,
-            },
-            lexicographia: {
-                lemma: praesensActiva.lexicographia.lemma,
-                radices: [
-                    praesensActiva.lexicographia.lemma,
-                    futurumActiva.lexicographia.lemma,
-                    praeteritumPassiva.lexicographia.lemma,
-                    futurumPassiva.lexicographia.lemma,
-                ],
-                etymologia: [],
-                pronunciatio: [],
-                references: [],
-                lemmataAlterae: [],
-                lemmaVerbi,
-            },
-            interpretationes: {
-                [LANG]: []
-            }
+async function combineParticipium(participii: LemmataParticipii, lemmaVerbi: string): Promise<Participium> {
+    const lemmataParticipiorum = Object.values(participii).map(demacron)
+    const parses = await Promise.all(lemmataParticipiorum.map(lemma => getParseByEntry(lemma)))
+    const participium: Participium = {
+        pars: 'participium',
+        inflectiones: { },
+        lexicographia: {
+            lemma: '',
+            radices: [],
+            etymologia: [],
+            pronunciatio: [],
+            references: [],
+            lemmataAlterae: [],
+            lemmaVerbi,
+        },
+        interpretationes: {
+            [LANG]: []
         }
-        return participium
     }
-    else {
-        return null
+    for (const parse of parses) {
+        if (parse && parse.success === true) {
+            const firstLexis = parse.lexes[0]
+            participium.inflectiones = {
+                ...participium.inflectiones,
+                ...firstLexis.inflectiones,
+            }
+            participium.lexicographia = {
+                ...participium.lexicographia,
+                radices: [
+                    ...participium.lexicographia.radices,
+                    firstLexis.lexicographia.lemma,
+                ]
+            }
+            participium.lexicographia.lemma = participium.lexicographia.lemma || firstLexis.lexicographia.lemma
+        }
     }
+    return participium
 }
 
 function forceGradus(inflectiones: Inflectiones<StatusAdiectivi>, gradus: Gradus): Inflectiones<StatusAdiectivi> {
@@ -103,12 +101,7 @@ async function collectForOneLexis(lexis: Lexis) {
             await database.upsertLexis(lexis)
             const participii = lexis.lemmataAlii.participii
             const participium = await combineParticipium(participii, lexis.lexicographia.lemma)
-            if (participium) {
-                await database.upsertLexis(participium)
-            }
-            else {
-                console.warn(`Cannot compile participium: ${lexis.lexicographia.lemma}`)
-            }
+            await database.upsertLexis(participium)
             break
         }
         case 'nomen-adiectivum': {
