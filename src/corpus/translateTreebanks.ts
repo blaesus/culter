@@ -30,7 +30,7 @@ function translatePerseusTreebank(xml: string): InflectedFormDesignation[][] {
         c: 'coniunctio',
         p: 'pronomen',
         i: 'interiectio',
-        r: 'adpositum',
+        r: 'praepositio',
         m: 'nomen-adiectivum', // numeral
         e: 'exclamatio',
         u: 'punctum'

@@ -29,7 +29,6 @@ export type Pars =
     | 'interiectio'
     | 'articulus'
     | 'punctum'
-    | 'adpositum'
     | 'exclamatio'
     | 'alienum'
     | 'alia'

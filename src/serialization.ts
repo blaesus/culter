@@ -44,11 +44,10 @@ const parsDict: Dictionary<Pars> = {
     'interiectio': 14,
     'articulus': 15,
     'punctum': 16,
-    'adpositum': 17,
-    'exclamatio': 18,
-    'alienum': 19,
-    'alia': 20,
-    'ignotus': 21,
+    'exclamatio': 17,
+    'alienum': 18,
+    'alia': 19,
+    'ignotus': 20,
 }
 
 const parsMinorDict: Dictionary<ParsMinor> = {
