@@ -58,6 +58,16 @@ export const database = {
             db = await connect(url)
         }
     },
+    async setup() {
+        db.collection(PAGE).createIndex({'remoteUrl': 1})
+        db.collection(PAGE).createIndex({'entry': 1})
+        db.collection(PAGE).createIndex({'id': 1})
+        db.collection(PARSE).createIndex({'id': 1})
+        db.collection(PARSE).createIndex({'parseUrl': 1})
+        db.collection(LEXIS).createIndex({'pars': 1})
+        db.collection(LEXIS).createIndex({'lexicographia.lemma': 1})
+        db.collection(LEXIS).createIndex({'lexicographia.etymologia': 1})
+    },
     async upsertPage(recordInput: PageRecordInput): Promise<PageRecord> {
         const query = {
             remoteUrl: recordInput.remoteUrl,
