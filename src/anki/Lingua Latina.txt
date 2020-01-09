@@ -1,0 +1,5 @@
+5598e9f7-e877-0047-9a2c-a60d219d27e9		vocābulum	vocābulum, vocābulī	word	n		cap01
+36e03080-98d4-4ba9-a4e3-bd7b53f2d483		ūnus	ūnus, ūna, ūnum	one, only			cap01
+e15d1947-0deb-95dc-0277-50780799dd25		ubi	ubi	where			cap01 duplicate
+ebb1e260-4fe0-39db-5ace-6b0e8dbc6ae6		trēs	trēs tria	three			cap01
+caa8d7c4-91e6-9c34-9255-75b79c49cc91		tertius	tertius -a -um	third			cap01

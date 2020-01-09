@@ -1,0 +1,10 @@
+5598e9f7-e877-0047-9a2c-a60d219d27e9	vocafc2c2c4c	vocābulum	vocābulum, vocābulī	word	n		cap01
+36e03080-98d4-4ba9-a4e3-bd7b53f2d483	unus84a120c4	ūnus	ūnus, ūna, ūnum	one, only			cap01
+e15d1947-0deb-95dc-0277-50780799dd25	ubi-8b67f548	ubi	ubi	where			cap01 duplicate
+ebb1e260-4fe0-39db-5ace-6b0e8dbc6ae6	tres373579b8	trēs	trēs tria	three			cap01
+caa8d7c4-91e6-9c34-9255-75b79c49cc91	tertd96cc3e8	tertius	tertius -a -um	third			cap01
+bded9402-886b-5cac-2d46-97a67183e116	syllb09c647f	syllaba	syllaba -ae	syllable	f		cap01
+b287ed48-237d-7b81-938e-16a2f33b0379	sex-49177532	sex	sex	six			cap01
+007b5223-9ad1-28dc-cf1e-0b35a7464575	sed-757500cd	sed	sed	but			cap01
+aa310aaf-ccb7-fcd0-2230-eef167eb1d05	secu324327ce	secundus	secundus -a -um	second, favorable			cap01
+54eede11-af7c-1618-eb85-bd655c596627	roma99591aa7	Rōmānus	Rōmānus -a -um	Roman			cap01
