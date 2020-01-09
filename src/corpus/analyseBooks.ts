@@ -8,6 +8,21 @@ import { serializeStatum } from 'serialization'
 
 const fallbackAuthors = ['caesar', 'cicero', 'aquinas']
 
+export type LemmataSummary = {
+    unknownForms: [string, number][]
+    knownLemmata: [string, number][]
+}
+
+function printSummary(summary: LemmataSummary) {
+    let output = ''
+
+    output += `${summary.unknownForms.length} unknown forms, ${summary.knownLemmata.length} parsed lemmata`
+    output += summary.unknownForms.map(form => form[0].padEnd(12, ' ') + ',' + form[1].toString()).join('\n')
+
+    console.info(output)
+}
+
+
 function getAuthors(): string[] {
     if (process.argv[2]) {
         return process.argv[2].split(',')
@@ -54,15 +69,15 @@ async function main() {
         unkownCounter[result.forma] += 1
     }
     const unkwownEntries = Object.entries(unkownCounter).sort((entryA, entryB) => entryB[1] - entryA[1])
-    console.info('unknowns')
-    console.info(unkwownEntries.map(entry => `${entry[0]}-${entry[1]}`).join(' '))
-
     const knownEntries = Object.entries(counter).sort((entryA, entryB) => entryB[1] - entryA[1])
-    console.info('knowns')
-    console.info(knownEntries.join(' '))
-    console.info('unknown', unknownResults.length, 'known', knownResults.length,
-        Math.floor(unknownResults.length * 1000 / (knownResults.length + unknownResults.length)) / 10 + '%'
-    )
+
+    const summary: LemmataSummary = {
+        unknownForms: unkwownEntries,
+        knownLemmata: knownEntries
+    }
+
+    await data.saveLemmataSummary(summary)
+    printSummary(summary)
 
     process.exit()
 }

@@ -1,6 +1,6 @@
 import { Casus, Genus, Gradus, Inflectiones, Numerus, StatusAdiectivi } from 'lexis'
 import { translateEnglishCase } from './translateCase'
-import { splitMultipleFormae } from 'utils'
+import { splitMultipleFormaeFromDom, splitMultipleFormaeFromString } from "utils";
 import { serializeStatum } from 'serialization'
 import { regularizeTable } from "./nominalTableUtils";
 
@@ -58,7 +58,7 @@ export function parseTabluamAdiectivi(tableNode: CheerioElement,
                         gradus,
                     }
                     const clavis = serializeStatum('nomen-adiectivum', status)
-                    inflectiones[clavis] = splitMultipleFormae(formae)
+                    inflectiones[clavis] = splitMultipleFormaeFromString(formae)
                 }
             }
             else {
@@ -70,7 +70,7 @@ export function parseTabluamAdiectivi(tableNode: CheerioElement,
                     gradus,
                 }
                 const clavis = serializeStatum('nomen-adiectivum', status)
-                inflectiones[clavis] = splitMultipleFormae(formae)
+                inflectiones[clavis] = splitMultipleFormaeFromString(formae)
             }
         }
     }

@@ -1,12 +1,13 @@
 import { readFileAsync, readJSONAsync, writeFileAsync } from 'nodeUtils'
 import {
-    viaFrequencyTable, viaInflectionDict, viaLemmata, viaPOSStat, viaTabulaeParticipiorum,
+    viaFrequencyTable, viaInflectionDict, viaLemmata, viaLemmataSummary, viaPOSStat, viaTabulaeParticipiorum,
     viaTreebank,
-} from 'config'
+} from "config";
 import { FrequencyTable } from 'analysis/makeCrudeFrequencyTable'
 import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { TreebankSerialized, TreebankSource } from 'analysis/Model'
 import { TabulaParticipiorum } from 'analysis/makeTabulamParticipiorum'
+import { LemmataSummary } from "../../corpus/analyseBooks";
 
 const beautyStringify = (obj: {}) => JSON.stringify(obj, null, 4)
 const compactstringify = (obj: {}) => JSON.stringify(obj)
@@ -45,4 +46,11 @@ export const data = {
     getTabulamParticipiorum(): Promise<TabulaParticipiorum> {
         return readJSONAsync(viaTabulaeParticipiorum)
     },
+    saveLemmataSummary(summary: LemmataSummary) {
+        return writeFileAsync(viaLemmataSummary, beautyStringify(summary))
+    },
+    getLemmataSummary(): Promise<LemmataSummary> {
+        return readJSONAsync(viaLemmataSummary)
+    },
+
 }

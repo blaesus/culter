@@ -50,13 +50,25 @@ export const fallbackProxy = <T extends ObjectWithValueType>(obj: T, fallback: (
     }
 })
 
-export function splitMultipleFormae(s: string): string[] {
-    return s.split(',')
+export function splitMultipleFormaeFromString(s: string): string[] {
+    return s.trim()
+            .split(',')
             .map(s => s.split('\n'))
             .reduce(flatten, [])
             .filter(Boolean)
             .map(s => s.trim())
             .map(s => s.replace(/\d$/, ''))
+}
+
+export function splitMultipleFormaeFromDom(node: CheerioElement, $: CheerioStatic): string[] {
+    const html = $(node).html()
+    if (!html) {
+        return []
+    }
+    // handle words like Israhel, where multiple forms are separated by <br>
+    const htmlWithNewline = html.replace("<br>", "<div>\n</div>")
+    $(node).html(htmlWithNewline)
+    return splitMultipleFormaeFromString($(node).text())
 }
 
 export function decapitalize(s: string): string {

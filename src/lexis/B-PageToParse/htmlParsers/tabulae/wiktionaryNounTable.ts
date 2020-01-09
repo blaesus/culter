@@ -1,6 +1,6 @@
 import { Casus, Inflectiones, Numerus, StatusSubstantivi, StatusSubstantiviGenereMutabile } from "lexis";
 import { translateEnglishCase } from './translateCase'
-import { splitMultipleFormae } from 'utils'
+import { splitMultipleFormaeFromDom } from 'utils'
 import { serializeStatum } from 'serialization'
 import { regularizeTable } from "./nominalTableUtils";
 
@@ -24,7 +24,7 @@ export function parseTabluamSubstantivum(tableNode: CheerioElement, $: CheerioSt
                 persona: 'tertia'
             }
             const clavis = serializeStatum('nomen-substantivum', status)
-            inflectiones[clavis] = splitMultipleFormae($(contentCells[i]).text())
+            inflectiones[clavis] = splitMultipleFormaeFromDom(contentCells[i], $)
         }
     }
     return inflectiones

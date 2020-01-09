@@ -21,7 +21,7 @@ import {
 } from 'lexis'
 import { stringify } from 'querystring'
 import { sum } from './sum'
-import { splitMultipleFormae } from 'utils'
+import { splitMultipleFormaeFromDom, splitMultipleFormaeFromString } from "utils";
 import { serializeStatum } from 'serialization'
 
 /**
@@ -111,7 +111,7 @@ function translateModus(s: string): Modus | ParserMode {
 }
 
 function getFormas(s: string): string[] {
-    const formae = splitMultipleFormae(s.replace(/[0-9]/g, ''))
+    const formae = splitMultipleFormaeFromString(s.replace(/[0-9]/g, ''))
     return formae.filter(forma => forma !== '—')
 }
 
