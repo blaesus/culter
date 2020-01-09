@@ -15,7 +15,7 @@ import {
     Lexis,
     Littera,
     NomenAdiectivum,
-    NomenSubstantivum,
+    NomenSubstantivum, NomenSubstantivumGenereMutabile, Pars,
     ParsMinor,
     Participium,
     Postpositio,
@@ -24,8 +24,8 @@ import {
     StatusAdverbii,
     Tempus,
     Verbum,
-    Vox
-} from 'lexis'
+    Vox,
+} from "lexis";
 import { LANG } from 'config'
 import {
     AuxiliaryOutcomeTabulaeVerbi,
@@ -33,7 +33,7 @@ import {
     TabulaeInformatio,
 } from './tabulae/wiktionaryVerbTable'
 import { flatten, loggingProxy } from 'utils'
-import { parseTabluamSubstantivum } from './tabulae/wiktionaryNounTable'
+import { parseTabluamSubstantivum, parseTabluamSubstantivumGenereMutabile } from "./tabulae/wiktionaryNounTable";
 import { parseTabluamAdiectivi } from './tabulae/wiktionaryAdjectiveTable'
 import { parseTabluamParticipii } from './tabulae/wiktionaryParticipleTable'
 import { parseTabluamPronominis } from './tabulae/wiktionaryPronounTable'
@@ -358,37 +358,64 @@ function translateNominalGender(s: string): {
     }
 }
 
-const parseNounBrief: BriefParser<NomenSubstantivum> = (node, $) => {
+const parseNounBrief: BriefParser<NomenSubstantivum | NomenSubstantivumGenereMutabile> = (node, $) => {
     const lemma = $(node).find('.headword').text()
-    const regexAltra = /\(genitive (.*)\)/
-    const match = regexAltra.exec($(node).text())
-    let formaAltra = match && match[1]
-    const radices = formaAltra ? [lemma, formaAltra] : [lemma]
-    
-    const generaEtNumerus = $(node).find('.gender').text()
-    const {genera, pluralisSolum} = translateNominalGender(generaEtNumerus)
+    const regexGenetiva = /\(genitive (.*?)[,)]/
+    const match = regexGenetiva.exec($(node).text())
+    let formaGenetiva = match && match[1]
+    const radices = formaGenetiva ? [lemma, formaGenetiva] : [lemma]
     const declension = $(node).find('[title*=declension]').text().split(' ')[0]
     const thema = translateNominalThemeVowel(declension)
-    const immutabile = $(node).find('a[title=indeclinable]').length
-    const parsMinor: ParsMinor | undefined = immutabile ? 'nomen-immutabile' : undefined
-    const inflectiones: Inflectiones<NomenSubstantivum> = {
-        [serializeStatum('nomen-substantivum', {}, {parsMinor})]:
-            [lemma]
-    }
-    return {
-        lexis: {
-            genera,
-            parsMinor,
-            inflectiones,
-        },
-        lexicographia: {
-            lemma,
-            radices,
-            thema,
-            pluralisSolum,
+
+    const isSubstantivumMutabileGenere = (() => {
+        // Something like `mācedonicus m (genitive mācedonicī, feminine mācedonica); second declension`
+        // Normal nouns doesn't have the `feminine xxx` part
+        const regexForMutableGender = /\(genitive (.*?), feminine (.*?)\)/
+        return !!regexForMutableGender.exec($(node).text())
+    })()
+
+    if (isSubstantivumMutabileGenere) {
+        const pars: Pars = 'nomen-substantivum'
+        const parsMinor: ParsMinor = 'nomen-substantivum-genere-mutabile'
+
+        const inflectiones: Inflectiones<NomenSubstantivum> = {
+            [serializeStatum(pars, {}, {parsMinor})]: [lemma]
+        }
+        return {
+            lexis: {
+                pars,
+                parsMinor,
+                inflectiones,
+            },
+            lexicographia: {
+                lemma,
+                radices,
+                thema,
+                pluralisSolum: false,
+            }
+        }
+    } else {
+        const generaEtNumerus = $(node).find('.gender').text()
+        const {genera, pluralisSolum} = translateNominalGender(generaEtNumerus)
+        const immutabile = $(node).find('a[title=indeclinable]').length
+        const parsMinor: ParsMinor | undefined = immutabile ? 'nomen-immutabile' : undefined
+        const inflectiones: Inflectiones<NomenSubstantivum> = {
+            [serializeStatum('nomen-substantivum', {}, {parsMinor})]: [lemma]
+        }
+        return {
+            lexis: {
+                genera,
+                parsMinor,
+                inflectiones,
+            },
+            lexicographia: {
+                lemma,
+                radices,
+                thema,
+                pluralisSolum,
+            }
         }
     }
-    // throw new Error(`Cannot parse nominal brief ${s}`)
 }
 
 const parsePronounBrief: BriefParser<Pronomen> = (node, $) => {
@@ -567,6 +594,8 @@ const briefParsers: {[part in Section]?: (node: CheerioElement, $: CheerioStatic
     Letter: headwordExtractor('littera'),
     Interjection: headwordExtractor('interiectio')
 }
+
+// Briefs are something like: `Fennus m (genitive Fennī, feminine Fenna); second declension`
 
 function parsePartBrief(section: Section, node: CheerioElement, $: CheerioStatic): BriefInformatio<Lexis> {
     const parser = briefParsers[section]
@@ -951,9 +980,14 @@ export function parseWiktionaryLexemeGroup(nodes: CheerioElement[], $: CheerioSt
             case 'table': {
                 switch (state.section) {
                     case 'Noun': {
-                        const inflectiones = parseTabluamSubstantivum(node, $)
-                        const target = state.parsingResult as NomenSubstantivum
-                        target.inflectiones = inflectiones
+                        if (state.parsingResult.parsMinor === 'nomen-substantivum-genere-mutabile') {
+                            const target = state.parsingResult as NomenSubstantivumGenereMutabile
+                            target.inflectiones = parseTabluamSubstantivumGenereMutabile(node, $)
+                        }
+                        else {
+                            const target = state.parsingResult as NomenSubstantivum
+                            target.inflectiones = parseTabluamSubstantivum(node, $)
+                        }
                         break
                     }
                     case 'Proper noun': {

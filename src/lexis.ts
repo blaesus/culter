@@ -37,6 +37,7 @@ export type Pars =
 
 export type ParsMinor =
     | 'nomen-immutabile'
+    | 'nomen-substantivum-genere-mutabile'
     | 'adiectivum-immutabile'
     | 'pronomen-demonstrativum'
     | 'pronomen-personale'
@@ -111,7 +112,7 @@ interface LexisCommunis<Status, Lexicographia extends LexicographiaLexisCommunis
 }
 
 /**
- * Nomina (substantivi)
+ * Nomina (substantiva)
  */
 
 export interface StatusSubstantivi {
@@ -130,8 +131,22 @@ export interface NomenSubstantivum extends LexisCommunis<StatusSubstantivi, Lexi
     genera: Genus[]
 }
 
+// A variant, for words line Finnus or macedonius, which could "inflect" by gender
+
+export interface StatusSubstantiviGenereMutabile {
+    casus: Casus
+    numerus: Numerus
+    genus: Genus
+    persona: 'tertia'
+}
+
+export interface NomenSubstantivumGenereMutabile extends LexisCommunis<StatusSubstantiviGenereMutabile, LexicographiaLSubstantivi> {
+    pars: 'nomen-substantivum'
+    parsMinor: 'nomen-substantivum-genere-mutabile'
+}
+
 /**
- * Nomina (adiectivi)
+ * Nomina (adiectiva)
  */
 
 export type Gradus = 'positivus' | 'comparativus' | 'superlativus'
@@ -155,7 +170,7 @@ export interface NomenAdiectivum extends LexisCommunis<StatusAdiectivi, Lexicogr
     pars: 'nomen-adiectivum'
 }
 
-export type Nomen = NomenSubstantivum | NomenAdiectivum
+export type Nomen = NomenSubstantivum | NomenSubstantivumGenereMutabile | NomenAdiectivum
 
 /**
  * Adverbium

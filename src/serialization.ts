@@ -61,6 +61,7 @@ const parsMinorDict: Dictionary<ParsMinor> = {
     'pronomen-immutabile': 7,
     'pronomen-reflexivum': 8,
     'pronomen-nullum': 9,
+    'nomen-substantivum-genere-mutabile': 10,
 }
 
 const numerusDict: Dictionary<Numerus> = {
