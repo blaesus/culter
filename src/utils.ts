@@ -92,7 +92,7 @@ export function reverseCapitalize(s: string): string {
     }
 }
 
-export function fixUV(s: string): string {
+export function bruteForceFixUV(s: string): string {
     if (s[0] === 'u') {
         return ['v', s.slice(1)].join('')
     }
@@ -117,4 +117,78 @@ export function stripVoid<T extends ObjectWithValueType>(obj: T): T {
         }
     }
     return result
+}
+
+export function replaceUV(
+    text: string,
+    uvTarget: "u" | "v" = "v",
+): string {
+    // Translated from https://github.com/diyclassics/cltk/blob/uv-norm/cltk/stem/latin/j_v.py
+    // Original license: MIT
+    // Capitalization and Roman numeral handling is removed for simplicity
+
+    const ENDINGS_PRESENT_3 = "o|is|it|imus|itis|unt|ebam|ebas|ebat|ebamus|ebatis|ebant|em|es|et|emus|etis|ent|am|as|at|amus|atis|ant|or|eris|itur|imur|imini|untur|ebar|ebaris|ebatur|ebamur|ebamini|ebantur|ar|eris|etur|emur|emini|entur"
+    const ENDINGS_PERFECT = "i|isti|it|imus|istis|erunt|eram|eras|erat|eramus|eratis|erant|ero|eris|erit|erimus|eritis|erint|erim|isse|isses|isset|issemus|issetis|issent"
+    const ENDINGS_12_DEC = "arum|orum|ae|am|as|us|um|is|os|a|i|o"
+    const ENDINGS_3_DEC = "is|e|i|em|um|ibus|es"
+
+    let replacePatterns: [string, string][] = []
+
+    if (uvTarget === "u") {
+        replacePatterns.push(['v', 'u'])
+    }
+    else {
+        replacePatterns = replacePatterns.concat([
+            ['(?<=\\bab|\\bad|\\bex|\\bin|\\bob)u(?=a|e|i|o|u)','v'],
+            ['(?<=\\bcon|\\bper|\\bsub)u(?=a|e|i|o|u)','v'],
+            ['(?<=\\btrans)u(?=a|e|i|o|u)','v'],
+            ['(?<=\\bcircum)u(?=a|e|i|o|u)','v'],
+            ['(?<=\\but)ue', 've'],
+            ['(?<=\\bquam|\\bquem|\\bquid|\\bquod)u', 'v'],
+            ['(?<=\\baliud|\\bcuius)u', 'v'],
+            ['(?<=\\bquantas)u','v'],
+            ['(?<=hel)u','v'],
+            ['(?<=animad)u','v'],
+        ])
+        replacePatterns = replacePatterns.concat([
+            ['vv','uv'],
+            ['ivv','iuv'],
+            ['luu','lvu'],
+            ['muir','mvir'],
+            ['(?<!a|e|i|o|u)lv','lu'],
+            // (r'(?<!\br)u', 'v')
+        ])
+        replacePatterns = replacePatterns.concat([
+            ['(?<=q)ve\\b','ue'],
+            ['(?<=m|s)ue\\b', 've'],
+        ])
+        const excPatterns: [string, string][] = [
+            [`\\bexv(${ENDINGS_PRESENT_3})(que)?\\b`,'exu\g<1>\g<2>'],
+            [`\\beserui(${ENDINGS_PRESENT_3})(que)?\\b`,'servi\g<1>\g<2>'],
+            [`\\b(ex)?arv(${ENDINGS_PERFECT})(que)?\\b`, '\g<1>aru\g<2>\g<3>'],
+            [`\\b(con)?v(a|o)lv(${ENDINGS_PERFECT})(que)?\\b`, '\g<1>v\g<2>lu\g<3>\g<4>'],
+            [`\\b(a|ad|ap)?p(a|e)rv(${ENDINGS_PERFECT})(que)?`, '\g<1>p\g<2>ru\g<3>\g<4>'],
+            [`\\b(con|in|oc|per)?c(a|u)lv(${ENDINGS_PERFECT})(que)?`, '\g<1>c\g<2>lu\g<3>\g<4>'],
+            [`\\b(e|pro)?rv(${ENDINGS_PERFECT})(que)?`,'\g<1>ru\g<2>\g<3>'],
+            [`\\b(ab|dis|per|re)?solu(${ENDINGS_PERFECT})(que)?`, '\g<1>solv\g<2>\g<3>'],
+            [`\\b(de)?serv(${ENDINGS_PERFECT})(que)?`, '\g<1>seru\g<2>\g<3>'],
+            [`\\balv(${ENDINGS_PERFECT})(que)?`,'alu\g<1>\g<2>'],
+            [`bsiluestr(is|e|i|em|um|ibus|es)`,'silvestr\g<1>'],
+            [`\\bseruitu(s|t)(${ENDINGS_3_DEC})(que)?`,'servitu\g<1>\g<2>\g<3>'],
+            [`\\bseruil(${ENDINGS_3_DEC})(que)?`,'servil\g<1>\g<2>'],
+            [`\\b(ca|pa|se|si|va)(l|r)u(${ENDINGS_12_DEC})(que)?\\b`,'\g<1>\g<2>v\g<3>\g<4>'],
+            [`\\bAdvatuc(${ENDINGS_12_DEC})(que)?\\b`,'Aduatuc\g<1>\g<2>'],
+            [`\\bCaruili(${ENDINGS_12_DEC})(que)?\\b`,'Carvili\g<1>\g<2>'],
+            [`\\bserui(an|re)(m|s|t|mus|tis|nt)(que)?`,'servi\g<1>\g<2>\g<3>'],
+        ]
+        replacePatterns = replacePatterns.concat(excPatterns)
+    }
+
+    for (const pair of replacePatterns) {
+        const [regexString, replacment] = pair
+        const regex = new RegExp(regexString, "i")
+        text = text.replace(regex, replacment)
+    }
+
+    return text
 }

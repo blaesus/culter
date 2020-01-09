@@ -1,6 +1,6 @@
 import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { FrequencyTable } from './makeCrudeFrequencyTable'
-import { capitalize, demacron, reverseCapitalize, fixUV } from "utils";
+import { capitalize, demacron, reverseCapitalize, bruteForceFixUV, replaceUV } from "utils";
 import { InflectedFormDesignation, TokenAnalysis } from 'analysis/Model'
 import { isRomanNumerals } from 'corpus/tokenize'
 import { parseInflectionFormDesignationSeries } from 'serialization'
@@ -29,7 +29,10 @@ function shouldSkip(token: string): boolean {
 function getPossibleAlternativeSpellings(forma: string): string[] {
     return [
         reverseCapitalize(forma),
-        fixUV(forma),
+
+        bruteForceFixUV(forma),
+        replaceUV(forma, "v"),
+
         forma.toLowerCase(),
         capitalize(forma.toLowerCase()),
         forma.replace(/sset/, "visset"),
