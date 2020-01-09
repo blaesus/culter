@@ -192,3 +192,9 @@ export function replaceUV(
 
     return text
 }
+
+export function updateLine(text: string) {
+    (process.stdout as any).clearLine();
+    (process.stdout as any).cursorTo(0);
+    process.stdout.write(text);
+}

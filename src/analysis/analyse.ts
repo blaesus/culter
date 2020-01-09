@@ -1,6 +1,6 @@
 import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { FrequencyTable } from './makeCrudeFrequencyTable'
-import { capitalize, demacron, reverseCapitalize, bruteForceFixUV, replaceUV } from "utils";
+import { capitalize, demacron, reverseCapitalize, bruteForceFixUV, replaceUV, updateLine } from "utils";
 import { InflectedFormDesignation, TokenAnalysis } from 'analysis/Model'
 import { isRomanNumerals } from 'corpus/tokenize'
 import { parseInflectionFormDesignationSeries } from 'serialization'
@@ -86,7 +86,7 @@ export function analyseToken(forma: string, data: AnalyserData): TokenAnalysis {
 export function analyse(tokens: string[], data: AnalyserData): TokenAnalysis[] {
     const results: TokenAnalysis[] = []
     for (let i = 0; i < tokens.length; i += 1) {
-        if (i % 1000 === 0) console.info(`${i}/${tokens.length}`)
+        if (i % 10000 === 0) updateLine(`${i}/${tokens.length}`)
         const result = analyseToken(tokens[i], data)
         results[i] = result
     }
