@@ -35,7 +35,7 @@ In total, ${knownLemmata.length} known lemmata are collected. The most frequent 
 ${knownLemmata.slice(0, 10).map(pair => pair[0] + ',' + pair[1]).join("\n")}
     
 ${totalUnknownTokens} unknown forms (${unknownCoverage} of all text), of which
-    ${hapaxCount} (${hapaxPercent} of unknown) are hapx legomenon,
+    ${hapaxCount} (${hapaxPercent} of unknown) are hapax legomena,
     ${capitalizedCount} (${capilizedPercent} of unknown) are capialized (likely proper nouns)
     
 The most frequent unknown forms are:
