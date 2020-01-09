@@ -59,7 +59,6 @@ export async function getTokens(author: string): Promise<string[]> {
 }
 
 export async function main() {
-    console.info(process.argv)
     const FORCE_RETOKENIZE = process.argv[2] === 'all'
     let targetAuthors: string[]
     const allAvailableAuthors = (await readdirAsync(radixLatinLibrary)).filter(author => !author.endsWith('.txt'))

@@ -1,6 +1,6 @@
 import { database } from 'lexis/database'
 import { getTokens } from 'corpus/tokenizeBooks'
-import { fallbackProxy, flatten } from 'utils'
+import { fallbackProxy, flatten, isCapitalized } from "utils";
 import { data } from 'lexis/data'
 import { KnownTokenAnalysis, UnknownTokenAnalysis } from 'analysis/Model'
 import { analyse } from '../'
@@ -9,15 +9,39 @@ import { serializeStatum } from 'serialization'
 const fallbackAuthors = ['caesar', 'cicero', 'aquinas']
 
 export type LemmataSummary = {
+    totalTokenCount: number
     unknownForms: [string, number][]
     knownLemmata: [string, number][]
 }
 
 function printSummary(summary: LemmataSummary) {
-    let output = ''
 
-    output += `${summary.unknownForms.length} unknown forms, ${summary.knownLemmata.length} parsed lemmata`
-    output += summary.unknownForms.map(form => form[0].padEnd(12, ' ') + ',' + form[1].toString()).join('\n')
+    function prettyPercent(p: number): string {
+        return Math.round(p * 1000) / 10 + "%"
+    }
+
+    let output = '\n\n'
+
+    const { unknownForms, knownLemmata, totalTokenCount } = summary
+    const totalUnknownTokens = unknownForms.map(pair => pair[1]).reduce((a, sum) => a + sum)
+    const unknownCoverage = prettyPercent(totalUnknownTokens / totalTokenCount)
+    const hapaxCount = unknownForms.filter(pair => pair[1] <= 1).length
+    const hapaxPercent = prettyPercent(hapaxCount / totalUnknownTokens)
+    const capitalizedCount = unknownForms.filter(pair => isCapitalized(pair[0])).length
+    const capilizedPercent = prettyPercent(capitalizedCount / totalUnknownTokens)
+
+    output += unknownForms.map(form => form[0].padEnd(12, ' ') + ',' + form[1].toString()).join('\n')
+    output += `
+In total, ${knownLemmata.length} known lemmata are collected. The most frequent lemmata are:
+${knownLemmata.slice(0, 10).map(pair => pair[0] + ',' + pair[1]).join("\n")}
+    
+${totalUnknownTokens} unknown forms (${unknownCoverage} of all text), of which
+    ${hapaxCount} (${hapaxPercent} of unknown) are hapx legomenon,
+    ${capitalizedCount} (${capilizedPercent} of unknown) are capialized (likely proper nouns)
+    
+The most frequent unknown forms are:
+${unknownForms.slice(0, 10).map(pair => pair[0] + ',' + pair[1]).join("\n")}
+`
 
     console.info(output)
 }
@@ -72,6 +96,7 @@ async function main() {
     const knownEntries = Object.entries(counter).sort((entryA, entryB) => entryB[1] - entryA[1])
 
     const summary: LemmataSummary = {
+        totalTokenCount: tokens.length,
         unknownForms: unkwownEntries,
         knownLemmata: knownEntries
     }

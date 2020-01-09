@@ -26,6 +26,16 @@ function shouldSkip(token: string): boolean {
     return isArabicNumerals(token) || isRomanNumerals(token)
 }
 
+function getPossibleAlternativeSpellings(forma: string): string[] {
+    return [
+        reverseCapitalize(forma),
+        fixUV(forma),
+        forma.toLowerCase(),
+        capitalize(forma.toLowerCase()),
+        forma.replace(/sset/, "visset"),
+    ];
+}
+
 export function analyseToken(forma: string, data: AnalyserData): TokenAnalysis {
     if (shouldSkip(forma)) {
         return {
@@ -40,12 +50,7 @@ export function analyseToken(forma: string, data: AnalyserData): TokenAnalysis {
         designations = designationSeries.map(parseInflectionFormDesignationSeries)
     }
     else {
-        const possibleAlternativeTokens = [
-            reverseCapitalize(forma),
-            fixUV(forma),
-            forma.toLowerCase(),
-            capitalize(forma.toLowerCase())
-        ];
+        const possibleAlternativeTokens = getPossibleAlternativeSpellings(forma)
         for (const altToken of possibleAlternativeTokens) {
             const altDesignationSeries = inflectionDict[altToken]
             if (altDesignationSeries) {

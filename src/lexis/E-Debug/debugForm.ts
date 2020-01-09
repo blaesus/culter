@@ -18,6 +18,13 @@ async function main() {
     const parse = await database.getParseByEntry(form)
     if (parse) {
         console.info("[PARSE] OK: Has parse information")
+        if (parse.success) {
+            console.info("[PARSE] OK: Parse was successful")
+            console.info(JSON.stringify(parse.lexes, null, 4))
+        }
+        else {
+            console.info("[PARSE] ERROR: Parse failed")
+        }
     }
     else {
         console.info("[PAGE] ERROR: No parse information")
