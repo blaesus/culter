@@ -22,11 +22,23 @@ const punctuationRegex: RegExp[] = punctuations.map(punctuation => new RegExp(`\
 const htmlTagPatterns = [
     ['&lt', ''],
     ['&gt', ''],
+    ['&LT', ''],
+    ['&GT', ''],
     ['&acirc', 'a'],
     ['&ecirc', '3'],
     ['&icirc', 'i'],
     ['&ocirc', 'o'],
     ['&ucirc', 'u'],
+    ['&agrave', 'a'],
+    ['&egrave', 'e'],
+    ['&igrave', 'i'],
+    ['&ograve', 'o'],
+    ['&ugrave', 'u'],
+    ['&Agrave', 'A'],
+    ['&Egrave', 'E'],
+    ['&Igrave', 'I'],
+    ['&Ograve', 'O'],
+    ['&Ugrave', 'U'],
 ]
 
 const spaces: RegExp[] = [
