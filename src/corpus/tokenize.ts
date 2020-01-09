@@ -17,9 +17,17 @@ export const punctuations: string[] = [
     '*',
 ]
 
-const punctuationRegex: RegExp[] = punctuations.map(punctuation => new RegExp(
-    `\\${punctuation}`, 'g'
-))
+const punctuationRegex: RegExp[] = punctuations.map(punctuation => new RegExp(`\\${punctuation}`, 'g'))
+
+const htmlTagPatterns = [
+    ['&lt', ''],
+    ['&gt', ''],
+    ['&acirc', 'a'],
+    ['&ecirc', '3'],
+    ['&icirc', 'i'],
+    ['&ocirc', 'o'],
+    ['&ucirc', 'u'],
+]
 
 const spaces: RegExp[] = [
     /\n/g,
@@ -30,6 +38,11 @@ const spaces: RegExp[] = [
 function cleanText(s: string): string {
     for (const regex of punctuationRegex) {
         s = s.replace(regex, '')
+    }
+    for (const htmlPattern of htmlTagPatterns) {
+        const [tag, replacement] = htmlPattern
+        const regex = new RegExp(tag, 'g')
+        s = s.replace(regex, replacement)
     }
     for (const space of spaces) {
         s = s.replace(space, ' ')
