@@ -138,7 +138,7 @@ async function collectLexes(parseIds: string[]) {
                 if (parse && parse.success) {
                     const {lexes} = parse
                     for (const lexis of lexes) {
-                        console.info('\n' + lexis.lexicographia.lemma, state.parseIds.length)
+                        console.info(lexis.lexicographia.lemma, state.parseIds.length)
                         try {
                             await collectForOneLexis(lexis)
                         }
