@@ -1,6 +1,6 @@
 import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { FrequencyTable } from './makeCrudeFrequencyTable'
-import { demacron, reverseCapitalize, reverseInitialU } from "utils";
+import { capitalize, demacron, reverseCapitalize, fixUV } from "utils";
 import { InflectedFormDesignation, TokenAnalysis } from 'analysis/Model'
 import { isRomanNumerals } from 'corpus/tokenize'
 import { parseInflectionFormDesignationSeries } from 'serialization'
@@ -26,7 +26,7 @@ function shouldSkip(token: string): boolean {
     return isArabicNumerals(token) || isRomanNumerals(token)
 }
 
-function analyseToken(forma: string, data: AnalyserData): TokenAnalysis {
+export function analyseToken(forma: string, data: AnalyserData): TokenAnalysis {
     if (shouldSkip(forma)) {
         return {
             type: 'neglectus',
@@ -42,8 +42,9 @@ function analyseToken(forma: string, data: AnalyserData): TokenAnalysis {
     else {
         const possibleAlternativeTokens = [
             reverseCapitalize(forma),
-            reverseInitialU(forma),
-
+            fixUV(forma),
+            forma.toLowerCase(),
+            capitalize(forma.toLowerCase())
         ];
         for (const altToken of possibleAlternativeTokens) {
             const altDesignationSeries = inflectionDict[altToken]

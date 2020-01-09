@@ -19,6 +19,9 @@ case $1 in
   "make-dict")
     ts-node src/lexis/D-LexisToDict/makeInflectionDict.ts $2
   ;;
+  "debug")
+    ts-node src/lexis/E-Debug/debugForm $2
+  ;;
   "tokenize-books")
     ts-node src/corpus/tokenizeBooks.ts $2
   ;;
@@ -31,4 +34,5 @@ case $1 in
   "execute")
     ts-node $2
   ;;
+
 esac

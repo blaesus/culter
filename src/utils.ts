@@ -92,7 +92,7 @@ export function reverseCapitalize(s: string): string {
     }
 }
 
-export function reverseInitialU(s: string): string {
+export function fixUV(s: string): string {
     if (s[0] === 'u') {
         return ['v', s.slice(1)].join('')
     }
