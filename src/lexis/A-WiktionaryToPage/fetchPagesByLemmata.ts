@@ -1,4 +1,4 @@
-import { getWiktionaryPage } from './fetchPage'
+import { fetchWiktionaryPage, getWiktionaryPage } from "./fetchPage";
 import { spawnConcurrent } from 'nodeUtils'
 import { database } from 'lexis/database'
 import { parseWiktionaryHtml } from 'lexis/B-PageToParse/htmlParsers/parseWiktionaryHtml'
@@ -8,53 +8,57 @@ import { data } from 'lexis/data'
 async function fetchEntries(entries: string[]) {
     const CONCURRENT_WORKERS = 8
     const state = {
-        entries: entries,
+        entriesToDownload: entries,
         allEntries: entries,
     }
     
     async function fetchSingleEntry(): Promise<void> {
-        const nextEntry = state.entries[0]
-        state.entries = state.entries.filter(entry => entry !== nextEntry)
-        if (nextEntry) {
-            try {
-                const data = await getWiktionaryPage(nextEntry)
-                const parse = await parseWiktionaryHtml(data.html)
-                for (const mainLexis of parse.main) {
-                    if (mainLexis.pars === 'verbum') {
-                        const participleEntries =
-                            (Object.values(mainLexis.lemmataAlii.participii)
-                                   .filter(Boolean) as string[])
-                                .map(demacron)
-                        state.entries = [
-                            ...state.entries,
-                            ...participleEntries,
-                        ]
-                        state.allEntries = [
-                            ...state.allEntries,
-                            ...participleEntries,
-                        ]
-                    }
-                    if (mainLexis.pars === 'nomen-adiectivum') {
-                        const comparativeEntries = (Object.values(mainLexis.lexicographia.lemmataAlii).filter(Boolean) as string[]).map(demacron)
-                        
-                        state.entries = [
-                            ...state.entries,
-                            ...comparativeEntries,
-                        ]
-                        state.allEntries = [
-                            ...state.allEntries,
-                            ...comparativeEntries,
-                        ]
-                    }
+        const nextEntry = state.entriesToDownload[0]
+        state.entriesToDownload = state.entriesToDownload.filter(entry => entry !== nextEntry)
+        if (!nextEntry) {
+            return
+        }
+        try {
+            const data = await fetchWiktionaryPage(nextEntry)
+            const parse = await parseWiktionaryHtml(data.html)
+
+            // Add participles for verbs and comparatives and superlatives for adjectives
+            // As we need their full list of inflected forms
+            for (const mainLexis of parse.main) {
+                if (mainLexis.pars === 'verbum') {
+                    const participleEntries =
+                        (Object.values(mainLexis.lemmataAlii.participii)
+                               .filter(Boolean) as string[])
+                            .map(demacron)
+                    state.entriesToDownload = [
+                        ...state.entriesToDownload,
+                        ...participleEntries,
+                    ]
+                    state.allEntries = [
+                        ...state.allEntries,
+                        ...participleEntries,
+                    ]
+                }
+                if (mainLexis.pars === 'nomen-adiectivum') {
+                    const derivativeEntries = (Object.values(mainLexis.lexicographia.lemmataAlii).filter(Boolean) as string[]).map(demacron)
+
+                    state.entriesToDownload = [
+                        ...state.entriesToDownload,
+                        ...derivativeEntries,
+                    ]
+                    state.allEntries = [
+                        ...state.allEntries,
+                        ...derivativeEntries,
+                    ]
                 }
             }
-            catch (error) {
-                console.error(error.message)
-            }
-            return fetchSingleEntry()
         }
+        catch (error) {
+            console.error(`Error for "${nextEntry}": ${error.message}`)
+        }
+        return fetchSingleEntry()
     }
-    
+
     await spawnConcurrent(fetchSingleEntry, CONCURRENT_WORKERS)
 }
 

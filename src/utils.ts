@@ -54,6 +54,7 @@ export function splitMultipleFormae(s: string): string[] {
     return s.split(',')
             .map(s => s.split('\n'))
             .reduce(flatten, [])
+            .filter(Boolean)
             .map(s => s.trim())
             .map(s => s.replace(/\d$/, ''))
 }
@@ -66,7 +67,7 @@ export function capitalize(s: string): string {
     return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-function isCapitalized(s: string): boolean {
+export function isCapitalized(s: string): boolean {
     return s.charAt(0).toUpperCase() === s.charAt(0)
 }
 
@@ -78,6 +79,16 @@ export function reverseCapitalize(s: string): string {
         return capitalize(s)
     }
 }
+
+export function reverseInitialU(s: string): string {
+    if (s[0] === 'u') {
+        return ['v', s.slice(1)].join('')
+    }
+    else {
+        return s
+    }
+}
+
 
 export function removeNullItems<T>(accumulated: T[], next: T | null): T[] {
     if (next) {

@@ -1,7 +1,7 @@
 import { Casus } from '../../../../lexis'
 
 export function translateEnglishCase(s: string): Casus {
-    switch (s) {
+    switch (s.trim().toLocaleLowerCase()) {
         case 'nominative':
             return 'nominativus'
         case 'genitive':

@@ -100,8 +100,7 @@ export interface LexicographiaLexisCommunis {
     lemmataAlterae: string[]
 }
 
-interface LexisCommunis<Status,
-    Lexicographia extends LexicographiaLexisCommunis = LexicographiaLexisCommunis> {
+interface LexisCommunis<Status, Lexicographia extends LexicographiaLexisCommunis = LexicographiaLexisCommunis> {
     pars: Pars
     parsMinor?: ParsMinor
     inflectiones: Inflectiones<Status>

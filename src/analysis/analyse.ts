@@ -1,6 +1,6 @@
 import { InflectionDict } from 'lexis/D-LexisToDict/makeInflectionDict'
 import { FrequencyTable } from './makeCrudeFrequencyTable'
-import { demacron, reverseCapitalize } from 'utils'
+import { demacron, reverseCapitalize, reverseInitialU } from "utils";
 import { InflectedFormDesignation, TokenAnalysis } from 'analysis/Model'
 import { isRomanNumerals } from 'corpus/tokenize'
 import { parseInflectionFormDesignationSeries } from 'serialization'
@@ -26,7 +26,7 @@ function shouldSkip(token: string): boolean {
     return isArabicNumerals(token) || isRomanNumerals(token)
 }
 
-function getResult(forma: string, data: AnalyserData): TokenAnalysis {
+function analyseToken(forma: string, data: AnalyserData): TokenAnalysis {
     if (shouldSkip(forma)) {
         return {
             type: 'neglectus',
@@ -40,10 +40,17 @@ function getResult(forma: string, data: AnalyserData): TokenAnalysis {
         designations = designationSeries.map(parseInflectionFormDesignationSeries)
     }
     else {
-        const altToken = reverseCapitalize(forma)
-        const altDesignationSeries = inflectionDict[altToken]
-        if (altDesignationSeries) {
-            designations = altDesignationSeries.map(parseInflectionFormDesignationSeries)
+        const possibleAlternativeTokens = [
+            reverseCapitalize(forma),
+            reverseInitialU(forma),
+
+        ];
+        for (const altToken of possibleAlternativeTokens) {
+            const altDesignationSeries = inflectionDict[altToken]
+            if (altDesignationSeries) {
+                designations = altDesignationSeries.map(parseInflectionFormDesignationSeries)
+                break
+            }
         }
     }
     if (designations.length > 0) {
@@ -71,7 +78,7 @@ export function analyse(tokens: string[], data: AnalyserData): TokenAnalysis[] {
     const results: TokenAnalysis[] = []
     for (let i = 0; i < tokens.length; i += 1) {
         if (i % 1000 === 0) console.info(`${i}/${tokens.length}`)
-        const result = getResult(tokens[i], data)
+        const result = analyseToken(tokens[i], data)
         results[i] = result
     }
     return results

@@ -61,7 +61,7 @@ const supinumCellOrder: Casus[] = [
 
 
 function translateTempus(s: string): [Tempus, Aspectus] {
-    switch (s) {
+    switch (s.trim().toLocaleLowerCase()) {
         case 'present':
             return ['praesens', 'imperfectivus']
         case 'imperfect':
@@ -81,7 +81,7 @@ function translateTempus(s: string): [Tempus, Aspectus] {
 }
 
 export function translateVox(s: string): StatusFinitivi['vox'] {
-    switch (s) {
+    switch (s.trim().toLocaleLowerCase()) {
         case 'active':
             return 'activa'
         case 'passive':
@@ -93,7 +93,7 @@ export function translateVox(s: string): StatusFinitivi['vox'] {
 }
 
 function translateModus(s: string): Modus | ParserMode {
-    switch (s) {
+    switch (s.trim().toLocaleLowerCase()) {
         case 'indicative':
             return 'indicativus'
         case 'subjunctive':

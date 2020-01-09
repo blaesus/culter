@@ -25,33 +25,32 @@ function makeEmptyMNTable(): string[][] {
     ]
 }
 
-function getCompleteTable(rows: CheerioElement[],
-                          $: CheerioStatic,
-                          mergeMF: boolean): string[][] {
+function regularizeTable(rows: CheerioElement[], $: CheerioStatic, mergeMF: boolean): string[][] {
     const table = mergeMF ? makeEmptyMNTable() : makeEmptyMFNTable()
     for (let rowNumber = 0; rowNumber < rows.length; rowNumber += 1) {
         const row = rows[rowNumber]
-        const cells = $(row).find('td').toArray().filter(cell => !!$(cell).text())
+        const cells = $(row).find('td').toArray().filter(cell => !!$(cell).text().trim())
         let columnOffset = 0
         for (let cellNumber = 0; cellNumber < cells.length; cellNumber += 1) {
             const cell = cells[cellNumber]
             const $cell = $(cell)
+            const text =$cell.text().trim()
             const rowSpan = +$cell.attr('rowspan')
             const colSpan = +$cell.attr('colspan')
             if (rowSpan) {
                 for (let extraRow = 1; extraRow < rowSpan; extraRow += 1) {
-                    table[rowNumber + extraRow][cellNumber + columnOffset] = $cell.text()
+                    table[rowNumber + extraRow][cellNumber + columnOffset] = text
                 }
             }
             if (colSpan) {
                 for (let extraColumn = 1; extraColumn < colSpan; extraColumn += 1) {
-                    table[rowNumber][cellNumber + extraColumn + columnOffset] = $cell.text()
+                    table[rowNumber][cellNumber + extraColumn + columnOffset] = text
                 }
             }
             while (table[rowNumber][cellNumber + columnOffset]) {
                 columnOffset += 1
             }
-            table[rowNumber][cellNumber + columnOffset] = $cell.text()
+            table[rowNumber][cellNumber + columnOffset] = text
             if (colSpan) {
                 columnOffset += colSpan - 1
             }
@@ -100,7 +99,7 @@ export function parseTabluamAdiectivi(tableNode: CheerioElement,
             const rowText = $(row).text()
             return !rowText.includes('Number') && !rowText.includes('Case')
         })
-    const table = getCompleteTable(rows, $, mergeMF)
+    const table = regularizeTable(rows, $, mergeMF)
     $(rows).find('th').toArray().forEach(header => {
         try {
             casusOrder.push(translateEnglishCase($(header).text()))

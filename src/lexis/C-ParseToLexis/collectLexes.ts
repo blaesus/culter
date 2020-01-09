@@ -39,7 +39,7 @@ async function combineParticipium(participii: LemmataParticipii, lemmaVerbi: str
         }
     }
     for (const parse of parses) {
-        if (parse && parse.success === true) {
+        if (parse && parse.success) {
             const firstLexis = parse.lexes[0]
             participium.inflectiones = {
                 ...participium.inflectiones,

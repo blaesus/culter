@@ -20,7 +20,7 @@ async function main() {
         const text = $('.field-type-text-with-summary').text()
         texts += `1-${i}\n${text}`
     }
-    writeFileAsync('./caesar-commentarii-de-bello-gallico-liber-i.txt', texts)
+    await writeFileAsync('./caesar-commentarii-de-bello-gallico-liber-i.txt', texts)
 }
 
 main()

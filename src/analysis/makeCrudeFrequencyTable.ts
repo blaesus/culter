@@ -3,7 +3,7 @@ import { data } from 'lexis/data'
 
 export type FrequencyTable = {
     [key in string]?: number
-    }
+}
 
 async function main() {
     const text = (await readFileAsync('data/crudeFrequencies.txt')).toString()

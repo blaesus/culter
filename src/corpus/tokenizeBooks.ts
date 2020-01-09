@@ -59,16 +59,18 @@ export async function getTokens(author: string): Promise<string[]> {
 }
 
 export async function main() {
+    console.info(process.argv)
     const FORCE_RETOKENIZE = process.argv[2] === 'all'
     let targetAuthors: string[]
     const allAvailableAuthors = (await readdirAsync(radixLatinLibrary)).filter(author => !author.endsWith('.txt'))
-    if (!FORCE_RETOKENIZE) {
+    if (FORCE_RETOKENIZE) {
+        targetAuthors = allAvailableAuthors
+    }
+    else {
         const tokenizedAuthors = (await readdirAsync(radixTokens)).map(author => author.replace('\.json', ''))
         targetAuthors = allAvailableAuthors.filter(author => !tokenizedAuthors.includes(author))
     }
-    else {
-        targetAuthors = allAvailableAuthors
-    }
+    console.info(`Tokenizing books from authors ${targetAuthors}`)
     for (const author of targetAuthors) {
         console.info(`Tokenizing author ${author}`)
         const frequencyTable = await data.getFrequencyTable()

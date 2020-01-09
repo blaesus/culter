@@ -335,6 +335,11 @@ function translateNominalGender(s: string): {
                 genera: ['femininum', 'masculinum'],
                 pluralisSolum,
             }
+        case 'm or f':
+            return {
+                genera: ['masculinum', 'femininum'],
+                pluralisSolum,
+            }
         case '?': {
             return {
                 genera: [],
@@ -407,7 +412,9 @@ function translateAdjectivalThema(s: string): LexicographiaAdiectivum['thema'] {
     switch (s) {
         case 'firstsecond':
             return 'a'
-        case 'third':
+        case 'firstsecond-declension':
+            return 'a'
+        case 'third-declension':
             return 'consonans'
         default: {
             throw new Error(`Unexpected adjectival theme ${s}`)
@@ -417,7 +424,7 @@ function translateAdjectivalThema(s: string): LexicographiaAdiectivum['thema'] {
 
 const parseAdjectiveBrief: BriefParser<NomenAdiectivum> = (node, $) => {
     const lemma = $(node).find('.headword').text()
-    if ($(node).find('[title*=indeclinable]').length) {
+    if ($(node).find('[title*=indeclinable]').length || $(node).text().includes("indeclinable")) {
         return {
             lexis: {},
             lexicographia: {
@@ -430,10 +437,13 @@ const parseAdjectiveBrief: BriefParser<NomenAdiectivum> = (node, $) => {
     }
     else {
         const declension = $(node).find('[title*=declension]').text().split(' ')[0]
-        const thema =
-            lemma.endsWith('dam')
-                ? 'alia'
-                : translateAdjectivalThema(declension)
+        let thema: LexicographiaAdiectivum['thema'] = 'alia'
+        if (lemma.endsWith('dam')) {
+            thema = 'alia'
+        }
+        else {
+            thema = translateAdjectivalThema(declension)
+        }
         const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
         return {
             lexis: {},
@@ -1008,15 +1018,35 @@ export function parseWiktionaryLexemeGroup(nodes: CheerioElement[], $: CheerioSt
                         break
                     }
                     case 'Participle': {
-                        if (state.participium) {
-                            const inflectiones = parseTabluamParticipii(node, $, state.participium.vox, state.participium.tempus)
-                            const target = state.parsingResult as Participium
-                            target.inflectiones = inflectiones
-                            break
+                        if (!state.participium) {
+                            // Guess participle tempus and vox when the information cannot be gathered from page
+                            const lemma = state.parsingResult.lexicographia.lemma
+                            if (lemma.endsWith('ns')) {
+                                state.participium = {
+                                    tempus: "praesens",
+                                    vox: "activa"
+                                }
+                            }
+                            else if (lemma.endsWith('urus')) {
+                                state.participium = {
+                                    tempus: "futurum",
+                                    vox: "activa"
+                                }
+                            }
+                            else if (lemma.endsWith('us')) {
+                                state.participium = {
+                                    tempus: "praeteritum",
+                                    vox: "passiva"
+                                }
+                            }
+                            else {
+                                throw new Error('Encountered participle content without knowing its tempus and vox')
+                            }
                         }
-                        else {
-                            throw new Error('Encountered participle content without knowing its tempus and vox')
-                        }
+                        const inflectiones = parseTabluamParticipii(node, $, state.participium.vox, state.participium.tempus)
+                        const target = state.parsingResult as Participium
+                        target.inflectiones = inflectiones
+                        break
                     }
                 }
                 break
@@ -1062,6 +1092,7 @@ function isRedirection(node: CheerioElement, $: CheerioStatic): boolean {
                     && !definitionText.includes('Alternative form of')
                     && !definitionText.includes('Alternative spelling of')
                     && !definitionText.includes('superlative degree of')
+                    && !definitionText.includes('Diminutive of')
                 return !!isRedirection
             }
         )

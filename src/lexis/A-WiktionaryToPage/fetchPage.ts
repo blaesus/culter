@@ -4,7 +4,7 @@ import { database, PageRecord } from '../database'
 const wiktionaryUrl = (entry: string) =>
     `https://en.wiktionary.org/w/index.php?title=${encodeURIComponent(entry)}&printable=yes`
 
-async function fetchWiktionaryPage(entry: string): Promise<PageRecord> {
+export async function fetchWiktionaryPage(entry: string): Promise<PageRecord> {
     const url = wiktionaryUrl(entry)
     const response = await fetch(url)
     const html = await response.text()
