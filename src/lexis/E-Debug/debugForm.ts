@@ -1,7 +1,6 @@
 import { data } from "../data";
 import { database } from "../database";
 import { analyseToken } from "../../analysis/analyse";
-import { replaceUV } from "../../utils";
 
 async function main() {
     await database.connect()
@@ -49,6 +48,5 @@ async function main() {
 }
 
 if (require.main === module) {
-    console.info(replaceUV(process.argv[2]))
-    // main()
+    main()
 }

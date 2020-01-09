@@ -30,7 +30,6 @@ function printSummary(summary: LemmataSummary) {
     const capitalizedCount = unknownForms.filter(pair => isCapitalized(pair[0])).length
     const capilizedPercent = prettyPercent(capitalizedCount / totalUnknownTokens)
 
-    output += unknownForms.map(form => form[0].padEnd(12, ' ') + ',' + form[1].toString()).join('\n')
     output += `
 In total, ${knownLemmata.length} known lemmata are collected. The most frequent lemmata are:
 ${knownLemmata.slice(0, 10).map(pair => pair[0] + ',' + pair[1]).join("\n")}
@@ -40,7 +39,7 @@ ${totalUnknownTokens} unknown forms (${unknownCoverage} of all text), of which
     ${capitalizedCount} (${capilizedPercent} of unknown) are capialized (likely proper nouns)
     
 The most frequent unknown forms are:
-${unknownForms.slice(0, 10).map(pair => pair[0] + ',' + pair[1]).join("\n")}
+${unknownForms.slice(0, 20).map(pair => pair[0] + ',' + pair[1]).join("\n")}
 `
 
     console.info(output)
