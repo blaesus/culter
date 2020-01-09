@@ -31,6 +31,9 @@ case $1 in
   "translate-treebanks")
     ts-node src/corpus/translateTreebanks.ts $2
   ;;
+  "update-deck")
+    ts-node src/anki/updateDeck.ts $2
+  ;;
   "execute")
     ts-node $2
   ;;

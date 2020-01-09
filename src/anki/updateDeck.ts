@@ -3,36 +3,27 @@ import {readFileAsync, writeFileAsync} from "../nodeUtils";
 import {database} from '../lexis/database'
 import {randomBytes} from 'crypto'
 import { demacron, isCapitalized } from "../utils";
+import { data } from "../lexis/data";
 
 function cleanMeaning(s: string): string {
     return s.replace(/I /g, '').replace(/\n/g, ' ')
 }
 
-async function getNewLemmata(n = 30000): Promise<string[]> {
-    const text = (await readFileAsync('../../cache/parsingResults.txt')).toString()
-    const lineae = text.split('\n')
-    for (let i = 0; i < lineae.length; i += 1) {
-        const linea = lineae[i]
-        if (linea === 'knowns') {
-            const lineaKnowns = lineae[i+1]
-            const entries = lineaKnowns.split(' ')
-            const lemmata = entries.map(entry => entry.split(',')[0])
-            return lemmata.slice(0, n)
-        }
-    }
-    return []
+async function getCandidateLemmata(n = 5000): Promise<string[]> {
+    const summary = await data.getLemmataSummary();
+    return summary.knownLemmata.slice(0, n).map(pair => pair[0])
 }
 
 async function update() {
     // let [id, lemma, partes, anglice, genus, ante, tags] = linea.split('\t')
     await database.connect()
 
-    const newLemmata = await getNewLemmata()
-    const lineae = (await readFileAsync('Lingua Latina.txt')).toString().split('\n')
+    const candidates = await getCandidateLemmata()
+    const lineae = (await readFileAsync('src/anki/Lingua Latina.txt')).toString().split('\n')
     const lineaeNovae = [...lineae]
-    for (const lemma of newLemmata) {
+    for (const lemma of candidates) {
         if (lineae.every(linea => !linea.includes(lemma))) {
-            console.info(newLemmata.indexOf(lemma), newLemmata.length, lemma)
+            console.info(candidates.indexOf(lemma), candidates.length, lemma)
             try {
                 const data = await database.getLexesByLemma(lemma)
                 const lexis = data[0]
@@ -46,6 +37,15 @@ async function update() {
                 }
                 if (isCapitalized(lexis.lexicographia.lemma)) {
                     continue
+                }
+                if (lexis.interpretationes.Anglica) {
+                    if (lexis.interpretationes.Anglica.some(definition => definition.significatio.includes("Alternative form"))) {
+                        continue
+                    }
+                    if (lexis.interpretationes.Anglica.some(definition => definition.significatio.includes("Alternative spelling"))) {
+                        continue
+                    }
+
                 }
                 const partes = lexis.lexicographia.radices.join(', ')
                 let anglice = lemma
@@ -69,7 +69,7 @@ async function update() {
             }
         }
     }
-    await writeFileAsync('Lingua Latina Nova.txt', lineaeNovae.join('\n'))
+    await writeFileAsync('src/anki/Lingua Latina Nova.txt', lineaeNovae.join('\n'))
     process.exit()
 }
 
