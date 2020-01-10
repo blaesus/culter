@@ -32,7 +32,7 @@ import {
     parseTabluamVerbiWiktionary,
     TabulaeInformatio,
 } from './tabulae/wiktionaryVerbTable'
-import { flatten, loggingProxy } from 'utils'
+import { flatten, loggingProxy, separateUnknownLength } from "utils";
 import { parseTabluamSubstantivum, parseTabluamSubstantivumGenereMutabile } from "./tabulae/wiktionaryNounTable";
 import { parseTabluamAdiectivi } from './tabulae/wiktionaryAdjectiveTable'
 import { parseTabluamParticipii } from './tabulae/wiktionaryParticipleTable'
@@ -487,7 +487,7 @@ const parseAdverbBrief: BriefParser<Adverbium> = (node, $) => {
     const s = $(node).text()
     const lemma = $(node).find('.headword').first().text()
     const formaeAltrae = $(node).find('b[lang=la]').toArray().map(b => $(b).text())
-    const radices = [lemma, ...formaeAltrae]
+    const radices = [...separateUnknownLength(lemma), ...formaeAltrae]
     const nonComparabilis: boolean = s.includes('not comparable')
     let inflectiones: Inflectiones<Adverbium> = {}
     if (radices.length === 3) {
@@ -522,7 +522,7 @@ function headwordExtractor(pars: HeadwordOnlyLexis['pars']): BriefParser<Headwor
         const informatio: BriefInformatio<HeadwordOnlyLexis> = {
             lexis: {
                 inflectiones: {
-                    [serializeStatum(pars, {})]: [lemma]
+                    [serializeStatum(pars, {})]: separateUnknownLength(lemma)
                 },
             },
             lexicographia: {

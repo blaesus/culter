@@ -78,7 +78,7 @@ async function main() {
         process.exit()
     }
     else {
-        makeDict(false)
+        await makeDict(false)
     }
 }
 

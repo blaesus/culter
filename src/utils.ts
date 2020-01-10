@@ -21,7 +21,13 @@ const macronsPairs: [string, string][] = [
     ['Ī', 'I'],
     ['Ū', 'U'],
     ['Ē', 'E'],
-    // Unknown macrons
+]
+
+const marcronsRegexPairs: [RegExp, string][] = macronsPairs.map(pair =>
+    [new RegExp(pair[0], 'g'), pair[1]] as [RegExp, string]
+)
+
+const unknownLengthPairs: [string, string][] = [
     ['ā̆', 'a'],
     ['ē̆', 'e'],
     ['ī̆', 'i'],
@@ -34,13 +40,16 @@ const macronsPairs: [string, string][] = [
     ['Ū̆', 'u'],
 ]
 
-const marcronsRegexPairs: [RegExp, string][] = macronsPairs.map(pair =>
+const unknownLengthRegexPairs: [RegExp, string][] = unknownLengthPairs.map(pair =>
     [new RegExp(pair[0], 'g'), pair[1]] as [RegExp, string]
 )
 
 export function demacron(s?: string): string {
     s = s || ''
     for (const pair of marcronsRegexPairs) {
+        s = s.replace(pair[0], pair[1])
+    }
+    for (const pair of unknownLengthRegexPairs) {
         s = s.replace(pair[0], pair[1])
     }
     return s
@@ -208,4 +217,40 @@ export function updateLine(text: string) {
     (process.stdout as any).clearLine();
     (process.stdout as any).cursorTo(0);
     process.stdout.write(text);
+}
+
+// 'iū̆xtā' => ['iuxtā', 'iūxtā']
+export function separateUnknownLength(forma: string): string[] {
+    const BREVE = '̆'
+    if (forma.includes(BREVE)) {
+        let formae = [forma]
+        for (let i = 0; i <formae.length; i += 1) {
+            const characters = formae[i].split("")
+            if (characters.includes(BREVE)) {
+                const brevePos = characters.indexOf(BREVE)
+                if (brevePos <= 0) {
+                    continue
+                }
+                const previousCharacter = characters[brevePos-1]
+                const correspondingShortForms = macronsPairs.find(pair => pair[0] === previousCharacter)
+                if (!correspondingShortForms) {
+                    continue
+                }
+                characters.splice(brevePos, 1)
+                const originalFormWithoutBreve = characters.join("")
+                const shortFormCharacters = [...characters]
+                const shortCharacter = correspondingShortForms[1]
+                shortFormCharacters[brevePos-1] = shortCharacter
+                const shortFormWithoutBreve = shortFormCharacters.join("")
+
+                formae.splice(i, 1)
+                formae.push(originalFormWithoutBreve)
+                formae.push(shortFormWithoutBreve)
+            }
+        }
+        return formae
+    }
+    else {
+        return [forma]
+    }
 }
