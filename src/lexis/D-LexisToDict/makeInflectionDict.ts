@@ -1,5 +1,5 @@
 import { database } from 'lexis/database'
-import { demacron, fallbackProxy } from 'utils'
+import { demacron, fallbackProxy, updateLine } from "utils";
 import { data } from 'lexis/data'
 import { MinimusSeriesStatus, parseSeriemStatus, serializeInflectedFormDesignation } from 'serialization'
 import { Lexis } from 'lexis'
@@ -48,7 +48,6 @@ function mergeIntoDict(baseDict: InflectionDict, newDict: InflectionDict) {
 async function makeDict(clavisWithMacron: boolean) {
     const inflectionDict = makeInflectionDict()
     const lexesIds = await database.getLexesInternalIds()
-    console.info(lexesIds)
     // Iterative style for performance reasons
     let index = 0
     for (const id of lexesIds) {
@@ -57,7 +56,7 @@ async function makeDict(clavisWithMacron: boolean) {
             console.info('Cannot find lexis of id', id)
             continue
         }
-        console.info(`${index++}/${lexesIds.length}`)
+        updateLine(`${index++}/${lexesIds.length}`)
         const lexisDict = extractInflectionDictFromLexis(lexis, clavisWithMacron)
         mergeIntoDict(inflectionDict, lexisDict)
     }
