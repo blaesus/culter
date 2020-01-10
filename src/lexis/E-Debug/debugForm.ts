@@ -1,6 +1,8 @@
 import { data } from "../data";
 import { database } from "../database";
 import { analyseToken } from "../../analysis/analyse";
+import { parsePage } from "../B-PageToParse/parsePage";
+import { collectLexes } from "../C-ParseToLexis/collectLexes";
 
 async function main() {
     await database.connect()
@@ -8,7 +10,7 @@ async function main() {
     console.info("Debugging form", form)
 
     const pages = await database.findPagesByEntry(form)
-    if (pages) {
+    if (pages.length > 0) {
         console.info(`[PAGE] OK: Has ${pages.length} page records`)
     }
     else {
@@ -24,6 +26,13 @@ async function main() {
         }
         else {
             console.info("[PARSE] ERROR: Parse failed")
+            if (pages.length > 0) {
+                console.info("[PARSE] Trying to parse...")
+                const parse = await parsePage(pages[0])
+                console.info(parse)
+                console.info("[PARSE] Parse successful. Collecting new parse...")
+                await collectLexes([parse.id])
+            }
         }
     }
     else {

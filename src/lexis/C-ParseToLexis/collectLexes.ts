@@ -123,7 +123,7 @@ async function collectForOneLexis(lexis: Lexis) {
     }
 }
 
-async function collectLexes(parseIds: string[]) {
+export async function collectLexes(parseIds: string[]) {
     const CONCURRENT_WORKERS = 32
     const state: CompilerState = {
         parseIds

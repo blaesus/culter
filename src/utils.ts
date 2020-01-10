@@ -21,6 +21,17 @@ const macronsPairs: [string, string][] = [
     ['Ī', 'I'],
     ['Ū', 'U'],
     ['Ē', 'E'],
+    // Unknown macrons
+    ['ā̆', 'a'],
+    ['ē̆', 'e'],
+    ['ī̆', 'i'],
+    ['ō̆', 'o'],
+    ['ū̆', 'u'],
+    ['Ā̆', 'a'],
+    ['Ē̆', 'e'],
+    ['Ī̆', 'i'],
+    ['Ō̆', 'o'],
+    ['Ū̆', 'u'],
 ]
 
 const marcronsRegexPairs: [RegExp, string][] = macronsPairs.map(pair =>
