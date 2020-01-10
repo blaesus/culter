@@ -10,133 +10,6 @@ import {
     Vox
 } from 'lexis'
 
-export type MinimusSeriesStatus<S extends Status = Status> = string
-
-type DictionaryType<T extends string> = {
-    [key in T]: number
-}
-
-type AnyDictionary = {
-    [key in string]?: number
-}
-
-type Dictionary<T extends string> = DictionaryType<T> & AnyDictionary
-
-/**
- *  Order of entries is crucial here
- */
-
-const parsDict: Dictionary<Pars> = {
-    'nomen-substantivum': 0,
-    'nomen-adiectivum': 1,
-    'adverbium': 2,
-    'pronomen': 3,
-    'verbum': 4,
-    'infinitivum': 5,
-    'gerundium': 6,
-    'supinum': 7,
-    'participium': 8,
-    'coniunctio': 9,
-    'praepositio': 10,
-    'particula': 11,
-    'postpositio': 12,
-    'littera': 13,
-    'interiectio': 14,
-    'articulus': 15,
-    'punctum': 16,
-    'exclamatio': 17,
-    'alienum': 18,
-    'alia': 19,
-    'ignotus': 20,
-}
-
-const parsMinorDict: Dictionary<ParsMinor> = {
-    'nomen-immutabile': 0,
-    'adiectivum-immutabile': 1,
-    'pronomen-demonstrativum': 2,
-    'pronomen-personale': 3,
-    'pronomen-possessivum': 4,
-    'pronomen-interrogativum': 5,
-    'pronomen-relativum': 6,
-    'pronomen-immutabile': 7,
-    'pronomen-reflexivum': 8,
-    'pronomen-nullum': 9,
-    'nomen-substantivum-genere-mutabile': 10,
-}
-
-const numerusDict: Dictionary<Numerus> = {
-    singularis: 0,
-    pluralis: 1,
-}
-
-
-const genusDict: Dictionary<Genus> = {
-    masculinum: 0,
-    femininum: 1,
-    neutrum: 2,
-}
-
-const casusDict: Dictionary<Casus> = {
-    'nominativus': 0,
-    'genetivus': 1,
-    'accusativus': 2,
-    'dativus': 3,
-    'ablativus': 4,
-    'locativus': 5,
-    'vocativus': 6,
-}
-
-
-const modusDict: Dictionary<Modus> = {
-    indicativus: 0,
-    imperativus: 1,
-    coniunctivus: 2,
-}
-
-const voxDict: Dictionary<Vox> = {
-    activa: 0,
-    passiva: 1,
-}
-
-const tempusDict: Dictionary<Tempus> = {
-    praesens: 0,
-    praeteritum: 1,
-    futurum: 2,
-}
-
-const aspectusDict: Dictionary<Aspectus> = {
-    imperfectivus: 0,
-    perfectivus: 1,
-}
-
-const personaDict: Dictionary<Persona> = {
-    prima: 0,
-    secunda: 1,
-    tertia: 2,
-}
-
-const gradusDict: Dictionary<Gradus> = {
-    positivus: 0,
-    comparativus: 1,
-    superlativus: 2,
-}
-
-type Undecim<T> = [T, T, T, T, T, T, T, T, T, T, T]
-
-const dicts: Undecim<Dictionary<string>> = [
-    parsDict,
-    parsMinorDict,
-    numerusDict,
-    personaDict,
-    genusDict,
-    casusDict,
-    gradusDict,
-    modusDict,
-    voxDict,
-    tempusDict,
-    aspectusDict,
-]
-
 type StatusOmnibus =
     StatusSubstantivi
     & StatusAdiectivi
@@ -146,7 +19,6 @@ type StatusOmnibus =
     & StatusGerundii
     & StatusSupini
     & StatusParticipii
-
 
 type Linea = [
     Pars,
@@ -165,26 +37,6 @@ type Linea = [
 
 const parameterSeparator = '|'
 const nullPlaceholder = '-'
-
-function applyDict(data: (string | undefined)[], dicts: Dictionary<string>[]): (number | null)[] {
-    return [...data].map((datum, index) =>
-        typeof dicts[index][datum || ''] === 'number'
-            ? dicts[index][datum || '']
-            : null
-    )
-}
-
-function lookupDict(data: number[], dicts: Dictionary<string>[]): (string | undefined)[] {
-    const entriesList = dicts.map(dict => Object.entries(dict))
-    return [...data].map((datum, index) => {
-        const entries = entriesList[index]
-        for (const entry of entries) {
-            if (entry[1] === datum) {
-                return entry[0]
-            }
-        }
-    })
-}
 
 export function serializeStatum<T extends Status>(pars: Pars,
                                                   status: T,
@@ -211,56 +63,25 @@ export function parseSeriemStatus<S extends StatusOmnibus>(series: SeriesStatus<
     return result
 }
 
-export function minimizeStatus<S extends Partial<StatusOmnibus>>(
-    pars: Pars,
-    parsMinor: ParsMinor | undefined,
-    status: S | undefined,
-): MinimusSeriesStatus<S> {
-    if (!status) {
-        return ''
-    }
-    const {
-        numerus,
-        persona,
-        genus,
-        casus,
-        gradus,
-        modus,
-        vox,
-        tempus,
-        aspectus
-    } = status
-    const linea = [
-        pars,
-        parsMinor,
-        numerus,
-        persona,
-        genus,
-        casus,
-        gradus,
-        modus,
-        vox,
-        tempus,
-        aspectus
-    ]
-    return applyDict(linea, dicts).map(x => typeof x === 'number' ? x.toString(36) : nullPlaceholder).join('')
-}
-
 const separator = '|'
 
 export function serializeInflectedFormDesignation(designation: InflectedFormDesignation): string {
+    if (!designation.status) {
+        throw new Error("No status!" + designation)
+    }
     return [
         designation.forma,
         designation.lemma,
-        minimizeStatus(designation.pars, designation.parsMinor, designation.status as any)
+        serializeStatum(designation.pars, designation.status, {parsMinor: designation.parsMinor})
     ].join(separator)
 }
 
 export function parseInflectionFormDesignationSeries<S extends Status = Status>(
-    series: MinimusSeriesStatus<S>
+    series: SeriesStatus<S>
 ): InflectedFormDesignation {
-    const [forma, lemma, minimusStatusSeries] = series.split(separator)
     const [
+        forma,
+        lemma,
         pars,
         parsMinor,
         numerus,
@@ -272,7 +93,7 @@ export function parseInflectionFormDesignationSeries<S extends Status = Status>(
         vox,
         tempus,
         aspectus,
-    ] = lookupDict(minimusStatusSeries.split('').map(Number), dicts)
+    ] = series.split(separator).map(c => c === nullPlaceholder ? undefined : c)
     const status = {
         numerus,
         persona,
