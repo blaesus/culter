@@ -43,11 +43,13 @@ const htmlTagPatterns = [
 
 const spaces: RegExp[] = [
     /\n/g,
+    /\r\n/g,
+    /\r/g,
     /\t/g,
 ]
 
 
-function cleanText(s: string): string {
+function cleanSentence(s: string): string {
     for (const regex of punctuationRegex) {
         s = s.replace(regex, '')
     }
@@ -72,7 +74,7 @@ export function isRomanNumerals(s: string): boolean {
 
 
 export function tokenize(sentence: string, frequencyTable: FrequencyTable): string[] {
-    const tokens = cleanText(decapitalize(sentence)).split(' ')
+    const tokens = cleanSentence(decapitalize(sentence)).split(' ')
     for (let i = 0; i < tokens.length; i += 1) {
         const token = tokens[i]
         if (token.endsWith('que') && !frequencyTable[token]) {
