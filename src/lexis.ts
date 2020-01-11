@@ -48,6 +48,7 @@ export type ParsMinor =
     | 'pronomen-reflexivum'
     | 'pronomen-nullum'
     | 'numerus-cardinalis'
+    | 'numerus-cardinalis-immutabilis'
 
 
 export type Numerus = 'singularis' | 'pluralis'
