@@ -54,7 +54,6 @@ type PartsWiktionary =
     | 'Numeral'
     | 'Determiner'
     | 'Participle'
-    | 'Anagrams'
     | 'Suffix'
     | 'Preposition'
     | 'Postposition'
@@ -104,6 +103,7 @@ type GeneralSection =
     | 'Coordinate terms'
     | 'Usage notes'
     | 'Synonyms'
+    | 'Anagrams'
 
 type Section = GeneralSection | PartsWiktionary
 
@@ -124,6 +124,7 @@ function getGeneralSection(s: string | null): GeneralSection | null {
         || s === 'Coordinate terms'
         || s === 'Usage notes'
         || s === 'Synonyms'
+        || s === 'Anagrams'
     ) {
         return s
     }
@@ -146,6 +147,8 @@ function translateWiktionarySession(s: GeneralSection): keyof LexicographiaLexis
             return null
         case 'Usage notes':
             return null
+        case 'Anagrams':
+            return null
         default: {
             throw new Error(`Unexpected general session: ${s}`)
         }
@@ -163,7 +166,6 @@ function getWiktionaryPart(s: string | null): PartsWiktionary | null {
         || s === 'Numeral'
         || s === 'Determiner'
         || s === 'Participle'
-        || s === 'Anagrams'
         || s === 'Suffix'
         || s === 'Preposition'
         || s === 'Postposition'
