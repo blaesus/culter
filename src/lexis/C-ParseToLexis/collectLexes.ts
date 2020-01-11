@@ -14,6 +14,7 @@ import { LANG } from 'config'
 import { LemmataParticipii } from '../B-PageToParse/htmlParsers/tabulae/wiktionaryVerbTable'
 import { makePronounLexis } from './makePronounLexes'
 import { parseSeriemStatus, serializeStatum } from 'serialization'
+import { numeri } from "../data/numerus";
 
 interface CompilerState {
     parseIds: string[]
@@ -123,6 +124,16 @@ async function collectForOneLexis(lexis: Lexis) {
     }
 }
 
+async function collectManualLexes() {
+    const pronomina = await makePronounLexis()
+    for (const pronomen of pronomina) {
+        await database.upsertLexis(pronomen)
+    }
+    for (const numerus of numeri) {
+        await database.upsertLexis(numerus)
+    }
+}
+
 export async function collectLexes(parseIds: string[]) {
     const CONCURRENT_WORKERS = 32
     const state: CompilerState = {
@@ -156,19 +167,20 @@ export async function collectLexes(parseIds: string[]) {
     }
     
     await spawnConcurrent(collectNext, CONCURRENT_WORKERS)
-    
-    const pronomina = await makePronounLexis()
-    for (const pronomen of pronomina) {
-        await database.upsertLexis(pronomen)
-    }
+    await collectManualLexes()
 }
 
 async function main() {
     await database.connect()
-    const argv = process.argv[2]
-    if (argv) {
-        const parseIds = [argv]
-        await collectLexes(parseIds)
+    const target = process.argv[2]
+    if (target) {
+        if (target === "manual") {
+            await collectManualLexes()
+        }
+        else {
+            const parseIds = [target]
+            await collectLexes(parseIds)
+        }
     }
     else {
         const parseIds = await database.getSuccessfulParseIds()

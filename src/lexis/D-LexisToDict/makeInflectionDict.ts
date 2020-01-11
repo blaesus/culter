@@ -1,11 +1,11 @@
 import { database } from 'lexis/database'
 import { demacron, fallbackProxy, updateLine } from "utils";
 import { data } from 'lexis/data'
-import { MinimusSeriesStatus, parseSeriemStatus, serializeInflectedFormDesignation } from 'serialization'
-import { Lexis } from 'lexis'
+import { parseSeriemStatus, serializeInflectedFormDesignation } from 'serialization'
+import { Lexis, SeriesStatus, Status } from "lexis";
 
 export type InflectionDict = {
-    [forma in string]: MinimusSeriesStatus[]
+    [forma in string]: SeriesStatus<Status>[]
 }
 
 function makeInflectionDict(): InflectionDict {
@@ -56,7 +56,7 @@ async function makeDict(clavisWithMacron: boolean) {
             console.info('Cannot find lexis of id', id)
             continue
         }
-        updateLine(`${index++}/${lexesIds.length}`)
+        updateLine(`${++index}/${lexesIds.length}`)
         const lexisDict = extractInflectionDictFromLexis(lexis, clavisWithMacron)
         mergeIntoDict(inflectionDict, lexisDict)
     }
