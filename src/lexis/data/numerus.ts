@@ -193,7 +193,7 @@ export const numeri: NomenAdiectivum[] = [
         }
     },
     makeIndeclinableNumeralCardinal("quattuor", "four"),
-    makeIndeclinableNumeralCardinal("quinque", "five"),
+    makeIndeclinableNumeralCardinal("quīnque", "five"),
     makeIndeclinableNumeralCardinal("sex", "six"),
     makeIndeclinableNumeralCardinal("septem", "seven"),
     makeIndeclinableNumeralCardinal("octō", "eight"),
