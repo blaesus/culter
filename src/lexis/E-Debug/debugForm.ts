@@ -22,7 +22,7 @@ async function main() {
         console.info("[PARSE] OK: Has parse information")
         if (parse.success) {
             console.info("[PARSE] OK: Parse was successful")
-            console.info(JSON.stringify(parse.lexes, null, 4))
+            console.info(JSON.stringify(parse, null, 4))
         }
         else {
             console.info("[PARSE] ERROR: Parse failed")
@@ -37,6 +37,14 @@ async function main() {
     }
     else {
         console.info("[PAGE] ERROR: No parse information")
+    }
+
+    const lexis = await database.getLexesByLemma(form)
+    if (lexis.length) {
+        console.info(`[LEXIS] OK: Found ${lexis.length} lexis`, lexis)
+    }
+    else {
+        console.error(`[LEXIS] ERROR: No lexis`)
     }
 
     const inflectionDict = await data.getInflectionDict()

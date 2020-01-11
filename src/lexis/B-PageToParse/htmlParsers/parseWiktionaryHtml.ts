@@ -20,7 +20,7 @@ import {
     Participium,
     Postpositio,
     Praepositio,
-    Pronomen, StatusAdiectivi,
+    Pronomen, PronomenDemonstrativum, StatusAdiectivi,
     StatusAdverbii,
     Tempus,
     Verbum,
@@ -460,7 +460,9 @@ const parseAdjectiveBrief: BriefParser<NomenAdiectivum> = (node, $) => {
                 inflectiones: {
                     [serializeStatum<StatusAdiectivi>(
                         'nomen-adiectivum',
-                        {} as StatusAdiectivi,
+                        {
+                            gradus: 'positivus',
+                        } as StatusAdiectivi,
                         {parsMinor: 'adiectivum-immutabile'}
                     )]: [lemma]
                 }
@@ -578,9 +580,19 @@ interface LexemeGroupParserState {
     } | null
     
     adiectivum: {
-        gradus: Gradus
+        gradus: Gradus,
     }
 }
+
+const parseDeterminerBrief: BriefParser<NomenAdiectivum | Pronomen> = (node, $) => {
+    if ($(node).text().includes("(indeclinable)")) {
+        return parseAdjectiveBrief(node, $)
+    }
+    else {
+        return parsePronounBrief(node, $)
+    }
+}
+
 
 type BriefInformatio<LexisT extends Lexis> = {
     lexis: Partial<LexisT>
@@ -594,7 +606,7 @@ const briefParsers: {[part in Section]?: (node: CheerioElement, $: CheerioStatic
     Verb: parseVerbBrief,
     Adjective: parseAdjectiveBrief,
     Adverb: parseAdverbBrief,
-    Determiner: parsePronounBrief,
+    Determiner: parseDeterminerBrief,
     Numeral: parseAdjectiveBrief,
     Conjunction: headwordExtractor('coniunctio'),
     Participle: parseAdjectiveBrief,
@@ -855,7 +867,8 @@ export function parseWiktionaryLexemeGroup(nodes: CheerioElement[], $: CheerioSt
         auxiliaryParsingResults: [],
         participium: null,
         adiectivum: {
-            gradus: 'positivus' as 'positivus'
+            gradus: 'positivus' as 'positivus',
+            immutabile: false,
         },
     }, 'state')
 

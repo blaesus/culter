@@ -110,6 +110,9 @@ async function collectForOneLexis(lexis: Lexis) {
                 const enhancedLexis = await enhanceWithGrades(lexis)
                 await database.upsertLexis(enhancedLexis)
             }
+            else {
+                console.warn(`Adjective ${lexis.lexicographia.lemma} doesn't have a postive form. Skipped.`)
+            }
             break
         }
         case 'participium': {
@@ -149,7 +152,7 @@ export async function collectLexes(parseIds: string[]) {
                 if (parse && parse.success) {
                     const {lexes} = parse
                     for (const lexis of lexes) {
-                        console.info(lexis.lexicographia.lemma, state.parseIds.length)
+                        console.info(lexis.lexicographia.lemma, 'remaining: ', state.parseIds.length)
                         try {
                             await collectForOneLexis(lexis)
                         }
