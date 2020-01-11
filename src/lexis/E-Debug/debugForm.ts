@@ -30,8 +30,10 @@ async function main() {
                 console.info("[PARSE] Trying to parse...")
                 const parse = await parsePage(pages[0])
                 console.info(parse)
-                console.info("[PARSE] Parse successful. Collecting new parse...")
-                await collectLexes([parse.id])
+                if (parse.success) {
+                    console.info("[PARSE] Parse successful. Collecting new parse...")
+                    await collectLexes([parse.id])
+                }
             }
         }
     }
