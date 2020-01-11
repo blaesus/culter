@@ -20,7 +20,7 @@ import {
     Participium,
     Postpositio,
     Praepositio,
-    Pronomen,
+    Pronomen, StatusAdiectivi,
     StatusAdverbii,
     Tempus,
     Verbum,
@@ -453,9 +453,18 @@ function translateAdjectivalThema(s: string): LexicographiaAdiectivum['thema'] {
 
 const parseAdjectiveBrief: BriefParser<NomenAdiectivum> = (node, $) => {
     const lemma = $(node).find('.headword').text()
-    if ($(node).find('[title*=indeclinable]').length || $(node).text().includes("indeclinable")) {
+    const immutabile = $(node).find('a[title=indeclinable]').length || $(node).text().includes("indeclinable")
+    if (immutabile) {
         return {
-            lexis: {},
+            lexis: {
+                inflectiones: {
+                    [serializeStatum<StatusAdiectivi>(
+                        'nomen-adiectivum',
+                        {} as StatusAdiectivi,
+                        {parsMinor: 'adiectivum-immutabile'}
+                    )]: [lemma]
+                }
+            },
             lexicographia: {
                 parsMinor: 'adiectivum-immutable',
                 lemma,
