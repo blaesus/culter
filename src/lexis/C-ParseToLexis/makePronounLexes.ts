@@ -9,7 +9,7 @@ import {
     PronomenPossessivum,
     PronomenReflexivum,
     PronomenRelativum,
-    StatusPronomenInterrogativum,
+    StatusPronominisInterrogativum,
     StatusPronominisDemonstrativi,
     StatusPronominisPersonalis,
     StatusPronominisPossessivi
@@ -170,7 +170,7 @@ function makePronomenInterrogativum() {
         for (const numerus of numeri) {
             const row = tabulaPronominum.interrogativum[numerus][genus]
             for (const casus of caseOrderPronominum) {
-                const status: StatusPronomenInterrogativum = {
+                const status: StatusPronominisInterrogativum = {
                     casus,
                     numerus,
                     genus,
@@ -208,7 +208,7 @@ function makePronomenRelativum() {
         for (const numerus of numeri) {
             const row = tabulaPronominum.relativum[numerus][genus]
             for (const casus of caseOrderPronominum) {
-                const status: StatusPronomenInterrogativum = {
+                const status: StatusPronominisInterrogativum = {
                     casus,
                     numerus,
                     genus,
@@ -297,7 +297,7 @@ function makePronomenReflexivum() {
         for (const numerus of numeri) {
             const row = tabulaPronominum.refexivum[numerus][genus]
             for (const casus of caseOrderPronominum) {
-                const status: StatusPronomenInterrogativum = {
+                const status: StatusPronominisInterrogativum = {
                     casus,
                     numerus,
                     genus,

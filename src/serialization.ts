@@ -3,22 +3,30 @@ import {
     Aspectus,
     Casus, Genus, Gradus, Modus, Numerus, Pars, ParsMinor, Persona, SeriesStatus, Status,
     StatusAdiectivi,
-    StatusFinitivi, StatusGerundii, StatusInfinitivi, StatusParticipii,
-    StatusPronominis,
+    StatusFinitivi, StatusGerundii, StatusInfinitivi, StatusParticipii, StatusPronomenRelativum,
+    StatusPronominis, StatusPronominisDemonstrativi, StatusPronominisInterrogativum, StatusPronominisPossessivi,
     StatusSubstantivi, StatusSupini,
     Tempus,
-    Vox
-} from 'lexis'
+    Vox,
+} from "lexis";
 
 type StatusOmnibus =
     StatusSubstantivi
+
+    & StatusPronominisPossessivi
+    & StatusPronominisInterrogativum
+    & StatusPronomenRelativum
+    & StatusPronominisDemonstrativi
+    & StatusPronominisPossessivi
+
     & StatusAdiectivi
-    & StatusPronominis
     & StatusFinitivi
     & StatusInfinitivi
     & StatusGerundii
     & StatusSupini
     & StatusParticipii
+
+type Informatio = string
 
 type Linea = [
     Pars,
@@ -31,7 +39,8 @@ type Linea = [
     Modus,
     Vox,
     Tempus,
-    Aspectus
+    Aspectus,
+    Informatio
 ]
 
 
@@ -45,8 +54,9 @@ export function serializeStatum<T extends Status>(pars: Pars,
                                                   } = {}): SeriesStatus<T> {
     const {parsMinor} = options
     const statusOmnibus = status as StatusOmnibus
-    const {numerus, persona, genus, casus, gradus, modus, vox, tempus, aspectus} = statusOmnibus
-    const linea: Linea = [pars, parsMinor, numerus, persona, genus, casus, gradus, modus, vox, tempus, aspectus]
+    const {numerus, persona, genus, casus, gradus, modus, vox, tempus, aspectus, numerusPersonae} = statusOmnibus
+    const informatio = numerusPersonae
+    const linea: Linea = [pars, parsMinor, numerus, persona, genus, casus, gradus, modus, vox, tempus, aspectus, informatio]
     return linea.map(node => node ? node : nullPlaceholder).join(parameterSeparator)
 }
 

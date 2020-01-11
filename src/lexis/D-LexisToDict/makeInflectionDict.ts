@@ -28,9 +28,10 @@ function extractInflectionDictFromLexis(
                         {
                             lemma: lexis.lexicographia.lemma,
                             pars: lexis.pars,
+                            parsMinor: lexis.parsMinor,
                             forma,
                             status: parseSeriemStatus(seriesStatus),
-                        }
+                        },
                     )
                 )
             }

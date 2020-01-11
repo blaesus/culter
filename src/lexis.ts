@@ -235,19 +235,20 @@ export interface PronomenDemonstrativum extends LexisCommunis<StatusPronominisDe
     parsMinor: 'pronomen-demonstrativum'
 }
 
-export interface StatusPronominis {
+export type StatusPronominis =
+    StatusPronominisPossessivi
+    | StatusPronominisInterrogativum
+    | StatusPronomenRelativum
+    | StatusPronominisDemonstrativi
+    | StatusPronominisPossessivi
+
+export interface StatusPronominisInterrogativum {
     casus: Casus
     numerus: Numerus
     genus: Genus
 }
 
-export interface StatusPronomenInterrogativum {
-    casus: Casus
-    numerus: Numerus
-    genus: Genus
-}
-
-export interface PronomenInterrogativum extends LexisCommunis<StatusPronomenInterrogativum> {
+export interface PronomenInterrogativum extends LexisCommunis<StatusPronominisInterrogativum> {
     pars: 'pronomen'
     parsMinor: 'pronomen-interrogativum'
 }
