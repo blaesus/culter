@@ -39,6 +39,9 @@ const htmlTagPatterns = [
     ['&Igrave', 'I'],
     ['&Ograve', 'O'],
     ['&Ugrave', 'U'],
+    ['&amp', '&'],
+    ['&nbsp', ' '],
+    ['&quot', '"'],
 ]
 
 const spaces: RegExp[] = [

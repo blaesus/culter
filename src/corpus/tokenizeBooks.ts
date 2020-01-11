@@ -32,15 +32,28 @@ async function getTexts(author: string): Promise<string[]> {
     }
 }
 
+const regexesEnglish: RegExp[] = [
+    /The Latin Library/,
+    /The Classics Page/,
+]
+
+function cleanBook(text: string): string {
+    for (const praenomen of praenomina) {
+        const regexPraenominis = new RegExp(`${praenomen[0]}\\.`, 'g')
+        text = text.replace(regexPraenominis, praenomen[1])
+    }
+    for (const regex of regexesEnglish) {
+        text = text.replace(regex, "")
+    }
+    return text
+}
+
 function tokenizeBooks(books: string[], frequencyTable: FrequencyTable): string[] {
     let tokens: string[] = []
     let bookIndex = 0
     for (let book of books) {
         console.info(`tokenizing book ${bookIndex++}`)
-        for (const praenomen of praenomina) {
-            const regexPraenominis = new RegExp(`${praenomen[0]}\\.`, 'g')
-            book = book.replace(regexPraenominis, praenomen[1])
-        }
+        book = cleanBook(book)
         const sentences = book.split('.')
         for (const sentence of sentences) {
             tokens = tokens.concat(tokenize(sentence, frequencyTable))

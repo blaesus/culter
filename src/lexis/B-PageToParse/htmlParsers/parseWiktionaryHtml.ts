@@ -443,6 +443,8 @@ function translateAdjectivalThema(s: string): LexicographiaAdiectivum['thema'] {
             return 'a'
         case 'third-declension':
             return 'consonans'
+        case 'third':
+            return 'consonans'
         default: {
             throw new Error(`Unexpected adjectival theme ${s}`)
         }

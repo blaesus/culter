@@ -24,6 +24,7 @@ export const praenomina: PraenomenTable = [
     ['Ser', 'Servius'],
     ['Sex', 'Sextus'],
     ['S', 'Spurius'],
+    ['Sp', 'Spurius'],
     ['St', 'Statius'],
     ['Ti', 'Tiberius'],
     ['T', 'Titus'],

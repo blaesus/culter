@@ -77,6 +77,7 @@ export function splitMultipleFormaeFromString(s: string): string[] {
             .reduce(flatten, [])
             .filter(Boolean)
             .map(s => s.trim())
+            .filter(s => s !== "—")
             .map(s => s.replace(/\d$/, ''))
 }
 
