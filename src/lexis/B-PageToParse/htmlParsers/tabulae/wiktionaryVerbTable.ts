@@ -21,7 +21,7 @@ import {
 } from 'lexis'
 import { stringify } from 'querystring'
 import { sum } from './sum'
-import { splitMultipleFormaeFromDom, splitMultipleFormaeFromString } from "utils";
+import { splitMultipleFormaeFromString } from "utils";
 import { serializeStatum } from 'serialization'
 
 /**

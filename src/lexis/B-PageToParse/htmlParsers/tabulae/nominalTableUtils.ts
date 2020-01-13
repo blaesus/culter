@@ -1,3 +1,5 @@
+import { splitMultipleFormaeFromString } from "../../../../utils";
+
 function makeEmptyMFNTable(): string[][] {
     return [
         ['', '', '', '', '', ''],
@@ -62,5 +64,16 @@ export function regularizeTable(rows: CheerioElement[], $: CheerioStatic, mergeM
     }
 
     return table
+}
+
+export function splitMultipleFormaeFromDom(node: CheerioElement, $: CheerioStatic): string[] {
+    const html = $(node).html()
+    if (!html) {
+        return []
+    }
+    // handle words like Israhel, where multiple forms are separated by <br>
+    const htmlWithNewline = html.replace("<br>", "<div>\n</div>")
+    $(node).html(htmlWithNewline)
+    return splitMultipleFormaeFromString($(node).text())
 }
 

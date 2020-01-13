@@ -152,7 +152,7 @@ export const numeri: NomenAdiectivum[] = [
         parsMinor: "numerus-cardinalis",
         lexicographia: {
             lemma: 'trēs',
-            radices: ['trēs'],
+            radices: ['trēs', 'tria'],
             etymologia: [],
             pronunciatio: [],
             references: [],

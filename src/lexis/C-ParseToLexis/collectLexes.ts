@@ -14,7 +14,7 @@ import { LANG } from 'config'
 import { LemmataParticipii } from '../B-PageToParse/htmlParsers/tabulae/wiktionaryVerbTable'
 import { makePronounLexis } from './makePronounLexes'
 import { parseSeriemStatus, serializeStatum } from 'serialization'
-import { numeri } from "../data/numerus";
+import { numeri } from "../data/numeri";
 
 interface CompilerState {
     parseIds: string[]

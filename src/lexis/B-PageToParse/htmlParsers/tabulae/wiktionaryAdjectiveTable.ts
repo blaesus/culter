@@ -1,6 +1,6 @@
 import { Casus, Genus, Gradus, Inflectiones, Numerus, StatusAdiectivi } from 'lexis'
 import { translateEnglishCase } from './translateCase'
-import { splitMultipleFormaeFromDom, splitMultipleFormaeFromString } from "utils";
+import { splitMultipleFormaeFromString } from "utils";
 import { serializeStatum } from 'serialization'
 import { regularizeTable } from "./nominalTableUtils";
 

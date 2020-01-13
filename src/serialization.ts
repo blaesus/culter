@@ -61,7 +61,7 @@ export function serializeStatum<T extends Status>(pars: Pars,
 }
 
 export function parseSeriemStatus<S extends StatusOmnibus>(series: SeriesStatus<S>): S {
-    const [pars, parsMinor, numerus, persona, genus, casus, gradus, modus, vox, tempus, aspectus] = series.split(parameterSeparator)
+    const [pars, parsMinor, numerus, persona, genus, casus, gradus, modus, vox, tempus, aspectus, informatio] = series.split(parameterSeparator)
     const result = {
         numerus, genus, casus, gradus, modus, vox, tempus, aspectus, persona
     } as S

@@ -1,8 +1,7 @@
 import { Casus, Inflectiones, Numerus, StatusSubstantivi, StatusSubstantiviGenereMutabile } from "lexis";
 import { translateEnglishCase } from './translateCase'
-import { splitMultipleFormaeFromDom } from 'utils'
 import { serializeStatum } from 'serialization'
-import { regularizeTable } from "./nominalTableUtils";
+import { regularizeTable, splitMultipleFormaeFromDom } from "./nominalTableUtils";
 
 const numeri: Numerus[] = ['singularis', 'pluralis']
 

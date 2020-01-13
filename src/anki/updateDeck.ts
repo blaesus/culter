@@ -9,16 +9,18 @@ function cleanMeaning(s: string): string {
     return s.replace(/I /g, '').replace(/\n/g, ' ')
 }
 
-async function getCandidateLemmata(n = 5000): Promise<string[]> {
+async function getCandidateLemmata(n = 3000): Promise<string[]> {
     const summary = await data.getLemmataSummary();
     return summary.knownLemmata.slice(0, n).map(pair => pair[0])
 }
 
 async function update() {
+    const size = process.argv[2] ? +process.argv[2] : 5000
+
     // let [id, lemma, partes, anglice, genus, ante, tags] = linea.split('\t')
     await database.connect()
 
-    const candidates = await getCandidateLemmata()
+    const candidates = await getCandidateLemmata(size)
     const lineae = (await readFileAsync('src/anki/Lingua Latina.txt')).toString().split('\n')
     const lineaeNovae = [...lineae]
     for (const lemma of candidates) {
@@ -46,6 +48,9 @@ async function update() {
                         continue
                     }
 
+                }
+                if (lexis.lexicographia.lemma.endsWith('ssimus')) {
+                    continue
                 }
                 const partes = lexis.lexicographia.radices.join(', ')
                 let anglice = lemma
