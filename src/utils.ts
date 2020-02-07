@@ -60,7 +60,7 @@ type ObjectWithValueType = {
 }
 
 export const fallbackProxy = <T extends ObjectWithValueType>(obj: T, fallback: () => any): T => new Proxy(obj, {
-    get(target, key) {
+    get(target: T, key: string) {
         if (target[key]) {
             return target[key]
         }

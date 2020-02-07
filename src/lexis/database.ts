@@ -1,4 +1,4 @@
-import { connect, Db } from 'mongodb'
+import { connect, Db, MongoClient } from 'mongodb'
 import * as shortid from 'shortid'
 import { Lexis } from 'lexis'
 
@@ -55,7 +55,8 @@ let db: Db
 export const database = {
     async connect() {
         if (!db) {
-            db = await connect(url)
+            const client = await connect(url)
+            db = client.db()
         }
     },
     async setup() {
